@@ -4,7 +4,6 @@ words*.json
 logDb.json
 .vscode/
 kokomi.code-workspace
-package-lock.json
 
 # Logs
 logs
