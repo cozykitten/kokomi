@@ -6,10 +6,10 @@ module.exports = {
     data: new SlashCommandBuilder()
 		.setName('exit')
 		.setDescription('Kokomi goes to sleep'),
-	async execute(message, client) {
+	async execute(interaction, client) {
 
-		if (!JSON.parse(process.env.TRUSTED).includes(message.member.id)) return message.reply('Why would I listen to you?');
-		await message.reply({ content: 'Good night! <:KeqingSleep:1038896867305603122>', ephemeral: true});
+		if (!JSON.parse(process.env.TRUSTED).includes(interaction.member.id)) return interaction.reply('Why would I listen to you?');
+		await interaction.reply({ content: 'Good night! <:KeqingSleep:1038896867305603122>', ephemeral: true});
 		
 		lb.lastexit = true;
 		await synclb(lb);

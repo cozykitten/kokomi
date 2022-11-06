@@ -12,7 +12,7 @@ module.exports = {
 
     async execute(interaction, client) {
 
-        if (!JSON.parse(process.env.TRUSTED).includes(message.member.id)) return interaction.reply("Don't bother me");
+        if (!JSON.parse(process.env.TRUSTED).includes(interaction.member.id)) return interaction.reply("Don't bother me");
         const topic = await db.topic[interaction.options.getString('topic')];
         if (topic) {
 

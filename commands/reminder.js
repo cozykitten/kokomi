@@ -7,8 +7,8 @@ async function remindme(timestamp, client) {
 
     //build embed with db saved date and event name, send over client in dms
     const embed = new EmbedBuilder()
-        .setTitle('Reminder for ' + getDate(timestamp))
-        .setDescription(db.reminder[timestamp].event)
+        .setTitle(`Reminder for ${getDate(timestamp)}`)
+        .setDescription('<:AriNotes:1038919832135024640> | ' + db.reminder[timestamp].event)
         .setColor('#797FCB');
 
     const user = await client.users.fetch(db.reminder[timestamp].uid);
@@ -78,7 +78,7 @@ module.exports = {
             }
 
             sync(db);
-            interaction.reply({ content: `I set a reminder for \`\`${interaction.options.getString('event')}\`\` in \`\`${ms(time, { long: true })}\`\``, ephemeral: true });
+            interaction.reply({ content: `<:AriNotes:1038919832135024640> I set a reminder for \`\`${interaction.options.getString('event')}\`\` in \`\`${ms(time, { long: true })}\`\``, ephemeral: true });
             setTimeout(remindme, time, fuDate, client);
         }
     },

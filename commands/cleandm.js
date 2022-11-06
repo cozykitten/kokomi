@@ -11,7 +11,7 @@ module.exports = {
 
     async execute(interaction, client) {
 
-        if (!JSON.parse(process.env.TRUSTED).includes(message.member.id)) return message.reply('Why would I listen to you?');
+        if (!JSON.parse(process.env.TRUSTED).includes(interaction.member.id)) return interaction.reply('Why would I listen to you?');
 
         if (interaction.options.getString('id')) {
             
