@@ -91,7 +91,7 @@ module.exports = {
                         url: element.url
                     });
                 })
-                message.reply({ content: 'Playlist loaded <:ZeroHuh:814271092801142814>', ephemeral: true });
+                message.reply({ content: 'Playlist loaded <:ZeroShrug:1038896874985365626>', ephemeral: true });
             }
 
             if (!playerData.Connection) {
@@ -140,11 +140,11 @@ module.exports = {
         else if (message.options.getSubcommand() === 'skip') skip_song(message);
         else if (message.options.getSubcommand() === 'stop') {
             stop_song();
-            message.reply({ content: 'Thanks for listening! <:ZeroHappy:888870130048712755>', ephemeral: true });
+            message.reply({ content: 'Thanks for listening! <:ZeroHappy:1038896873651572746>', ephemeral: true });
         }
         else if (message.options.getSubcommand() === 'loop') {
             playerData.loop = message.options.getBoolean('toggle');
-            message.reply({ content:`Loop is set to \`\`${playerData.loop}\`\` now <:ZeroDuck:871733658720014366>`, ephemeral: true });
+            message.reply({ content:`Loop is set to \`\`${playerData.loop}\`\` now <:ZeroDuck:1038896870652653670>`, ephemeral: true });
         }
         else if (message.options.getSubcommand() === 'save') {
             if (!JSON.parse(process.env.TRUSTED).includes(message.member.id)) return message.reply('This option isn\'t available');
@@ -167,7 +167,7 @@ module.exports = {
                 }
             }
             sync(db);
-            message.reply({ content: `You want to listen to that again?? <:ZeroWorried:812730851619635232>`, ephemeral:false });
+            message.reply({ content: `You want to listen to that again?? <:ZeroWorried:1038896879288713256>`, ephemeral:false });
         }
         else if (message.options.getSubcommand() === 'queue') {
             if (!JSON.parse(process.env.TRUSTED).includes(message.member.id)) return message.reply('This option isn\'t available');
@@ -227,7 +227,7 @@ async function skip_song (message) {
     }
 
     await playerData.Player.stop();
-    message.reply({ content: 'Alright <:ZeroSip2:859114221916258335>', ephemeral: true })
+    message.reply({ content: 'Alright <:ZeroSip:1038896876390449162>', ephemeral: true })
 }
 
 async function stop_song() {

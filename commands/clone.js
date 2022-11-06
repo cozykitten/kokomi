@@ -21,7 +21,7 @@ module.exports = {
                 cloned = await message.channel.clone();
             }
 
-            if (cloned) message.reply({ content: 'channel cloned', ephemeral: true });
+            if (cloned) message.reply({ content: 'Alrighty <:AriSalute:1021920065802739752>', ephemeral: true });
             else message.reply('I might not have the permissions to manage channels'); 
     }
 }

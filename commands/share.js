@@ -28,8 +28,8 @@ module.exports = {
                     fail.push(user.username);
                 }
             }
-            if (fail.length) {
-                interaction.editReply({ content: "Shared message with " + topic.length + " users.", ephemeral: true });
+            if (!fail.length) {
+                interaction.editReply({ content: "Shared message with " + topic.length + " users. <:ZeroHappy:1038896873651572746>", ephemeral: true });
             }
             else {
                 interaction.editReply({ content: "Cannot send messages to " + fail.join(', '), ephemeral: true });

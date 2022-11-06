@@ -106,8 +106,8 @@ module.exports = {
             await register(rest, guildID, []);
             const count = await register(rest, guildID, commands);
 
-            if (count) message.reply({ content: `Successfully registered application commands for this guild <:ZeroCool:871457148138319903>`, ephemeral: false });
-            else message.reply({ content: `Failed registering application commands <:ZeroFire:871734161268961320>`, ephemeral: false });
+            if (count) message.reply({ content: `Successfully registered application commands for this guild <:ZeroCool:1038896868987510794>`, ephemeral: false });
+            else message.reply({ content: `Failed registering application commands <:ZeroFire:1038896872296808560>`, ephemeral: false });
         }
 	}
 }

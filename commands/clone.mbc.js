@@ -18,7 +18,7 @@ module.exports = {
             cloned = await message.channel.clone();
         }
 
-        if (cloned) message.channel.send('channel cloned');
+        if (cloned) message.channel.send('Alrighty <:AriSalute:1021920065802739752>');
         else message.channel.send('I might not have the permissions to manage channels');
     }
 }

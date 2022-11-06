@@ -77,7 +77,7 @@ module.exports = {
                         url: element.url
                     });
                 })
-                message.channel.send('Playlist loaded <:ZeroHuh:814271092801142814>');
+                message.channel.send('Playlist loaded <:ZeroShrug:1038896874985365626>');
             }
 
             if (!playerData.Connection) {
@@ -100,7 +100,7 @@ module.exports = {
                     playerData.Connection = connection;
                     playerData.Player = player;
                     await video_player();
-                    if (args[0] === 'play') message.channel.send(`I'm playing ${song.title} for you <:ZeroSip2:859114221916258335>`);
+                    if (args[0] === 'play') message.channel.send(`I'm playing ${song.title} for you <:ZeroSip:1038896876390449162>`);
 
                     playerData.Player.on('error', error => {
                         console.error(`Error: ${error}`);
@@ -120,7 +120,7 @@ module.exports = {
                 }
             }
             else {
-                if (args[0] === 'play') return message.channel.send(`I added ${song.title} to the queue <:ZeroDuck:871733658720014366>`);
+                if (args[0] === 'play') return message.channel.send(`I added ${song.title} to the queue <:ZeroDuck:1038896870652653670>`);
             }
         }
         else if (args[0] === 'skip') skip_song(message);
@@ -150,7 +150,7 @@ module.exports = {
                 }
             }
             sync(db);
-            message.channel.send(`You want to listen to that again?? <:ZeroWorried:812730851619635232>`);
+            message.channel.send(`You want to listen to that again?? <:ZeroWorried:1038896879288713256>`);
         }
     }
 }
