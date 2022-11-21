@@ -66,7 +66,7 @@ client.once('ready', () => {
         })
     }
     else {
-        lb.lastexit = false;
+        //lb.lastexit = false;
         synclb(lb);
     }
 
