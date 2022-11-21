@@ -17,9 +17,17 @@ const synclb = (lb) => new Promise((resolve) => {
         resolve();
     });
 });
+
+exports.synccd = (cd) => new Promise((resolve) => {
+    fs.writeFile("./creds.json", JSON.stringify(cd, null, 2), err => {
+        if (err) throw err;
+        resolve();
+    });
+});
     
 const db = readDatabase('words.json');
 const lb = readDatabase('logDb.json');
+exports.cd = readDatabase('creds.json');
 
 exports.db = db;
 exports.lb = lb;

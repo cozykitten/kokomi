@@ -26,6 +26,12 @@ async function remindme(timestamp, client) {
 
         const exists = await timestamp in db.reminder;
         if (exists) {
+
+            if (db.reminder[timestamp].repeat) {
+                const fuDate = timestamp + db.reminder[timestamp].repeat;
+                db.reminder[fuDate] = db.reminder[timestamp];
+                setTimeout(remindme, db.reminder[timestamp].repeat, fuDate, client);
+            }
             delete db.reminder[timestamp];
             sync(db);
         }
@@ -44,7 +50,12 @@ module.exports = {
 		.setDescription('set a reminder')
         .addSubcommand(subcommand => subcommand.setName('add').setDescription('add a new reminder')
             .addStringOption(option => option.setName('time').setDescription('time').setRequired(true))
-            .addStringOption(option => option.setName('event').setDescription('event').setRequired(true)))
+            .addStringOption(option => option.setName('event').setDescription('event').setRequired(true))
+            .addStringOption(option => option.setName('repeat').setDescription('repeat interval').addChoices(
+                { name: 'Daily', value: '86400000' },
+                { name: 'Weekly', value: '604800000' },
+                { name: 'Bi-weekly', value: '1209600000' }
+            )))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
     async execute(interaction, client) {
@@ -75,6 +86,11 @@ module.exports = {
             db.reminder[fuDate] = {
                 "uid": interaction.member.id,
                 "event": interaction.options.getString('event')
+            }
+
+            if (interaction.options.getString('repeat')) {
+                const interval = Number(interaction.options.getString('repeat'))
+                db.reminder[fuDate].repeat = interval;
             }
 
             sync(db);

@@ -14,7 +14,7 @@ module.exports = async (client, interaction) => {
 		lb.lastcall.subcommand = interaction.options._subcommand
 	}
 
-	if (interaction.options._hoistedOptions.length) {
+	if (interaction.commandName != 'login' && interaction.options._hoistedOptions.length) {
 
 		lb.lastcall.options = [];
 		for (const iterator of interaction.options._hoistedOptions) {

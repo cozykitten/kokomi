@@ -2,6 +2,7 @@
 commands/old/
 words*.json
 logDb.json
+creds.json
 .vscode/
 kokomi.code-workspace
 package-lock.json
