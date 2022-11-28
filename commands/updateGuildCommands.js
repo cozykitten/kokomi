@@ -98,13 +98,11 @@ module.exports = {
 
 
         if (message.options.getSubcommand() === 'global') {
-            await message.reply({ content: 'updating application commands now...', ephemeral: false });
-
             await registerGlobal(rest, []);
             const count = await registerGlobal(rest, commandList(command_files, global, 'GLOBAL'));
 
-            if (count) return message.editReply({ content: `Successfully registered GLOBAL application commands <:ZeroCool:1038896868987510794>`, ephemeral: false });
-            else return message.editReply({ content: `Failed registering application commands <:ZeroFire:1038896872296808560>`, ephemeral: false });
+            if (count) return message.reply({ content: `Successfully registered GLOBAL application commands <:ZeroCool:1038896868987510794>`, ephemeral: false });
+            else return message.reply({ content: `Failed registering application commands <:ZeroFire:1038896872296808560>`, ephemeral: false });
         }
 
 
