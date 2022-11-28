@@ -45,7 +45,7 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
     async execute(interaction) {
-        if (!JSON.parse(process.env.TRUSTED).includes(interaction.member.id)) return interaction.reply("Don't bother me");
+        if (!JSON.parse(process.env.TRUSTED).includes(interaction.user.id)) return interaction.reply("Don't bother me");
 
         if (interaction.options.getSubcommand() === 'add') {
 
@@ -60,25 +60,25 @@ module.exports = {
             await interaction.reply({content: 'hashed', ephemeral: true});
             console.log(hash);
 
-            if (cd[interaction.member.id]) {
-                if (cd[interaction.member.id].hash === hash) {
+            if (cd[interaction.user.id]) {
+                if (cd[interaction.user.id].hash === hash) {
                     console.log('hash identical');
-                    //addLogin(interaction.member.id, service);
+                    //addLogin(interaction.user.id, service);
 
-                    if (cd[interaction.member.id][service]) return interaction.editReply({ content: `You already saved a login for ${service}`});
-                    cd[interaction.member.id][service] = {};
+                    if (cd[interaction.user.id][service]) return interaction.editReply({ content: `You already saved a login for ${service}`});
+                    cd[interaction.user.id][service] = {};
 
-                    if (user) cd[interaction.member.id][service].user = encrypt(user, globalPass);
-                    if (email) cd[interaction.member.id][service].email = encrypt(email, globalPass);
-                    if (pass) cd[interaction.member.id][service].pass = encrypt(pass, globalPass);
-                    if (tag) cd[interaction.member.id][service].tag = encrypt(tag, globalPass);
+                    if (user) cd[interaction.user.id][service].user = encrypt(user, globalPass);
+                    if (email) cd[interaction.user.id][service].email = encrypt(email, globalPass);
+                    if (pass) cd[interaction.user.id][service].pass = encrypt(pass, globalPass);
+                    if (tag) cd[interaction.user.id][service].tag = encrypt(tag, globalPass);
 
                     synccd(cd);
                     console.log(cd);
                 }
             }
             else {
-                cd[interaction.member.id] = { hash: hash };
+                cd[interaction.user.id] = { hash: hash };
                 //encrypt();
                 synccd(cd);
             }
@@ -98,7 +98,7 @@ module.exports = {
             console.log(hash);
 
             
-            interaction.editReply({ content: 'decrypted: ' + decrypt(cd[interaction.member.id][service].user, globalPass)});
+            interaction.editReply({ content: 'decrypted: ' + decrypt(cd[interaction.user.id][service].user, globalPass)});
         }
 
 

@@ -7,18 +7,18 @@ module.exports = {
 		.setName('share')
 		.setDescription('share a message through dms')
         .addSubcommand(subcommand => subcommand.setName('members').setDescription('share a message with selected members')
-            .addStringOption(option => option.setName('message').setDescription('message you want to send').setRequired(true))
+            .addStringOption(option => option.setName('message').setDescription('message you want to send').setMaxLength(2000).setRequired(true))
             .addStringOption(option => option.setName('users').setDescription('uids or mentionables').setRequired(true)))
         .addSubcommand(subcommand => subcommand.setName('feed').setDescription('share a message with anyone following your topic')
             .addStringOption(option => option.setName('topic').setDescription('select a topic').setRequired(true))
-            .addStringOption(option => option.setName('message').setDescription('message to share').setRequired(true)))
+            .addStringOption(option => option.setName('message').setDescription('message to share').setMaxLength(2000).setRequired(true)))
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
     async execute(interaction, client) {
 
         let users;
         if (interaction.options.getSubcommand() === 'feed') {
-            if (!JSON.parse(process.env.TRUSTED).includes(interaction.member.id)) return interaction.reply("Don't bother me");
+            if (!JSON.parse(process.env.TRUSTED).includes(interaction.user.id)) return interaction.reply("Don't bother me");
             users = await db.topic[interaction.options.getString('topic')];
             if (!users) return interaction.reply(`Topic "${interaction.options.getString('topic')}" doesn't exists.`);
         }

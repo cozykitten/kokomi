@@ -16,7 +16,7 @@ module.exports = {
 
             const uids = await db.topic[interaction.options.getString('remove')];
             if (uids) {
-                const index = await db.topic[interaction.options.getString('remove')].findIndex(id => id === interaction.member.id);
+                const index = await db.topic[interaction.options.getString('remove')].findIndex(id => id === interaction.user.id);
                 if (index === -1) return interaction.reply({ content: "You aren't following this topic.", ephemeral: true });
                 db.topic[interaction.options.getString('remove')].splice(index, 1);
                 sync(db);
@@ -31,9 +31,9 @@ module.exports = {
 
             const uids = await db.topic[interaction.options.getString('topic')];
             if (uids) {
-                const index = await db.topic[interaction.options.getString('topic')].findIndex(id => id === interaction.member.id);
+                const index = await db.topic[interaction.options.getString('topic')].findIndex(id => id === interaction.user.id);
                 if (index === -1) {
-                    db.topic[interaction.options.getString('topic')].push(interaction.member.id);
+                    db.topic[interaction.options.getString('topic')].push(interaction.user.id);
                     sync(db);
                     return interaction.reply({ content: `You are now following "${interaction.options.getString('topic')}."`, ephemeral: true });
                 }

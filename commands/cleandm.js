@@ -11,11 +11,11 @@ module.exports = {
 
     async execute(interaction, client) {
 
-        if (!JSON.parse(process.env.TRUSTED).includes(interaction.member.id)) return interaction.reply('Why would I listen to you?');
+        if (!JSON.parse(process.env.TRUSTED).includes(interaction.user.id)) return interaction.reply('Why would I listen to you?');
 
         if (interaction.options.getString('id')) {
             
-            const user = await client.users.fetch(interaction.member.id);
+            const user = await client.users.fetch(interaction.user.id);
             if (user.dmChannel) {
                 const m = await user.dmChannel.messages.fetch(interaction.options.getString('id'));
                 await m.delete();
@@ -32,7 +32,7 @@ module.exports = {
 
             if (interaction.options.getInteger('amount') < 51) {
 
-                const user = await client.users.fetch(interaction.member.id);
+                const user = await client.users.fetch(interaction.user.id);
                 if (user.dmChannel) {
                     const messages = await user.dmChannel.messages.fetch({ limit: interaction.options.getInteger('amount'), cache: false })
                     messages.forEach(msg => {

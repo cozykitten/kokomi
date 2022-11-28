@@ -50,7 +50,7 @@ module.exports = {
 		.setDescription('set a reminder')
         .addSubcommand(subcommand => subcommand.setName('add').setDescription('add a new reminder')
             .addStringOption(option => option.setName('time').setDescription('time').setRequired(true))
-            .addStringOption(option => option.setName('event').setDescription('event').setRequired(true))
+            .addStringOption(option => option.setName('event').setDescription('event').setMaxLength(2000).setRequired(true))
             .addStringOption(option => option.setName('repeat').setDescription('repeat interval').addChoices(
                 { name: 'Daily', value: '86400000' },
                 { name: 'Weekly', value: '604800000' },
@@ -60,7 +60,7 @@ module.exports = {
 
     async execute(interaction, client) {
 
-        if (!JSON.parse(process.env.TRUSTED).includes(interaction.member.id)) return interaction.reply("Don't bother me");
+        if (!JSON.parse(process.env.TRUSTED).includes(interaction.user.id)) return interaction.reply("Don't bother me");
 
         if (interaction.options.getSubcommand() === 'add') {
             
@@ -84,7 +84,7 @@ module.exports = {
                 db.reminder = {};
             }
             db.reminder[fuDate] = {
-                "uid": interaction.member.id,
+                "uid": interaction.user.id,
                 "event": interaction.options.getString('event')
             }
 

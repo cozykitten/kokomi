@@ -17,7 +17,7 @@ module.exports = async (client, message) => {
         client.mbc.get('hello').execute(message);
 
     } else if (message.content.indexOf('go sleep') !== -1) {
-        client.mbc.get('exit').execute(message);
+        client.mbc.get('exit').execute(message, client);
 
     } else {
         const command = client.mbc.get(Cmd_Name);

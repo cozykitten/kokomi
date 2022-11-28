@@ -6,7 +6,7 @@ module.exports = async (client, interaction) => {
 
 	//log command to lb for crashreport on next start
 	lb.lastcall = {
-		userid: interaction.member.id,
+		userid: interaction.user.id,
 		command: interaction.commandName
 	}
 
