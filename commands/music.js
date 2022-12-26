@@ -176,7 +176,7 @@ module.exports = {
             const view_embed = new EmbedBuilder()
                 .setTitle('Queue')
                 .setDescription(`${song_q.map(song => song.title).join('\n')}`)
-                .setColor('#b6c6e2')
+                .setColor('#797FCB')
             message.reply({ embeds: [view_embed], ephemeral: true });
         }
         else if (message.options.getSubcommand() === 'playlists') {
@@ -186,7 +186,7 @@ module.exports = {
             const saved_playlists = new EmbedBuilder()
                 .setTitle('Saved Playlists')
                 .setDescription(`${db.playlist.map(list => list.name).join('\n')}`)
-                .setColor('#b6c6e2')
+                .setColor('#797FCB')
             message.reply({ embeds: [saved_playlists], ephemeral: true });
 
         }

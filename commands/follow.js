@@ -48,7 +48,7 @@ module.exports = {
             const view_embed = new EmbedBuilder()
                 .setTitle('Topics')
                 .setDescription(`${Object.keys(await db.topic).join('\n')}`)
-                .setColor('#b6c6e2')
+                .setColor('#797FCB')
             interaction.reply({ embeds: [view_embed] });
         }
         else return interaction.reply("You didn't select any option.");

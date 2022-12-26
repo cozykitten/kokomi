@@ -198,7 +198,7 @@ module.exports = {
                 const view_embed = new EmbedBuilder()
                     .setTitle('Saved Embeds')
                     .setDescription(`${db.custom_embed.map(embed => embed.name).join('\n')}`)
-                    .setColor('#b6c6e2')
+                    .setColor('#797FCB')
                 message.reply({ embeds: [view_embed] });
             }
         }
