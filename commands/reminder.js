@@ -56,6 +56,9 @@ module.exports = {
                 { name: 'Weekly', value: '604800000' },
                 { name: 'Bi-weekly', value: '1209600000' }
             )))
+        .addSubcommand(subcommand => subcommand.setName('list').setDescription('view a list of your reminders'))
+        .addSubcommand(subcommand => subcommand.setName('delete').setDescription('delete one of your reminders')
+            .addStringOption(option => option.setName('event').setDescription('event the reminder is set for').setRequired(true)))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
     async execute(interaction, client) {
@@ -96,6 +99,42 @@ module.exports = {
             sync(db);
             interaction.reply({ content: `<:AriNotes:1038919832135024640> I set a reminder for \`\`${interaction.options.getString('event')}\`\` in \`\`${ms(time, { long: true })}\`\``, ephemeral: true });
             setTimeout(remindme, time, fuDate, client);
+        }
+        else if (interaction.options.getSubcommand() === 'list') {
+
+            if (!db.reminder) {
+                return interaction.reply({ content: 'You didn\'t set any reminders' })
+            }
+
+            const reminderList = [];
+
+            for (const key in db.reminder) {
+                if (db.reminder[key].uid === interaction.user.id) {
+                    reminderList.push(db.reminder[key].event);
+                }
+            }
+
+            const replyEmbed = new EmbedBuilder()
+                .setTitle('Your set reminders')
+                .setDescription(reminderList.join('\n'))
+                .setColor('#797FCB')
+            interaction.reply({ embeds: [replyEmbed], ephemeral: true });
+        }
+        else if (interaction.options.getSubcommand() === 'delete') {
+
+            if (!db.reminder) {
+                return interaction.reply({ content: 'You didn\'t set any reminders' })
+            }
+
+            for (const key in db.reminder) {
+                if (db.reminder[key].uid !== interaction.user.id) continue;
+                if (db.reminder[key].event === interaction.options.getString('event')) {
+                    delete db.reminder[key];
+                    sync(db);
+                    return interaction.reply({ content: `<:AriSalute:1021920065802739752> I deleted your reminder for \`\`${interaction.options.getString('event')}\`\``, ephemeral: true });
+                }
+            }
+            interaction.reply({ content: `You didn\'t set any reminders for \`\`${interaction.options.getString('event')}\`\`` })
         }
     },
 

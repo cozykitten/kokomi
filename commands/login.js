@@ -103,7 +103,6 @@ module.exports = {
 
             const globalPass = interaction.options.getString('globalpassword');
             const hash = crypto.createHash('sha256').update(globalPass + process.env.SALT).digest('hex');
-            console.log(hash)
 
             if (!cd[interaction.user.id]) return interaction.reply({ content: `You didn't save any logins yet`, ephemeral: true });
             if (cd[interaction.user.id].hash !== hash) return interaction.reply({ content: `hashes don't match`, ephemeral: true });
@@ -119,7 +118,7 @@ module.exports = {
                 .setTitle('Your saved services')
                 .setDescription(plainText.join('\n'))
                 .setColor('#797FCB')
-                interaction.reply({ embeds: [replyEmbed], ephemeral: true });
+            interaction.reply({ embeds: [replyEmbed], ephemeral: true });
         }
     }
 }
