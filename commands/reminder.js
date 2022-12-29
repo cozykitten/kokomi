@@ -78,17 +78,25 @@ module.exports = {
             }
 
             if (time > 2147483646) {
-                return interaction.reply({ content: 'Cannot set a reminder further away than ``24d 18h``' });
+                return interaction.reply({ content: 'Cannot set a reminder for longer than ``24d 18h``' });
             }
+            if (time < 5000) {
+                return interaction.reply({ content: 'Cannot set a reminder shorter than ``5s``' });
+            }
+
             //calc future date & store in db
             const fuDate = Date.now() + time;
             
             if (!db.reminder) {
                 db.reminder = {};
             }
+
+            const timeout = setTimeout(remindme, time, fuDate, client);
+
             db.reminder[fuDate] = {
                 "uid": interaction.user.id,
-                "event": interaction.options.getString('event')
+                "event": interaction.options.getString('event'),
+                "timeoutID": timeout[Symbol.toPrimitive]()
             }
 
             if (interaction.options.getString('repeat')) {
@@ -98,7 +106,6 @@ module.exports = {
 
             sync(db);
             interaction.reply({ content: `<:AriNotes:1038919832135024640> I set a reminder for \`\`${interaction.options.getString('event')}\`\` in \`\`${ms(time, { long: true })}\`\``, ephemeral: true });
-            setTimeout(remindme, time, fuDate, client);
         }
         else if (interaction.options.getSubcommand() === 'list') {
 
@@ -129,6 +136,7 @@ module.exports = {
             for (const key in db.reminder) {
                 if (db.reminder[key].uid !== interaction.user.id) continue;
                 if (db.reminder[key].event === interaction.options.getString('event')) {
+                    clearTimeout(db.reminder[key].timeoutID);
                     delete db.reminder[key];
                     sync(db);
                     return interaction.reply({ content: `<:AriSalute:1021920065802739752> I deleted your reminder for \`\`${interaction.options.getString('event')}\`\``, ephemeral: true });
@@ -149,9 +157,11 @@ module.exports = {
                     remindme(fuDate, client);
                 }
                 else {
-                    setTimeout(remindme, fuDate - date, fuDate, client);
+                    const timeout = setTimeout(remindme, fuDate - date, fuDate, client);
+                    db.reminder[key].timeoutID = timeout[Symbol.toPrimitive]();
                 }
             }
+            sync(db);
         }
     }
 }
