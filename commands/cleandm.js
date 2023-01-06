@@ -18,8 +18,10 @@ module.exports = {
             const user = await client.users.fetch(interaction.user.id);
             if (user.dmChannel) {
                 const m = await user.dmChannel.messages.fetch(interaction.options.getString('id'));
-                await m.delete();
-                interaction.reply({ content: "deleted", ephemeral: true });
+                if (m.author.id === process.env.CLIENT_ID) {
+                    await m.delete();
+                    interaction.reply({ content: "deleted", ephemeral: true });
+                }
             }
             else {
                 const dm = await user.createDM();
@@ -36,18 +38,21 @@ module.exports = {
                 if (user.dmChannel) {
                     const messages = await user.dmChannel.messages.fetch({ limit: interaction.options.getInteger('amount'), cache: false })
                     messages.forEach(msg => {
-                        msg.delete();
+                        if (msg.author.id === process.env.CLIENT_ID) {
+                            msg.delete();
+                            interaction.reply({ content: "deleted", ephemeral: true });
+                        }
                     });
-                    interaction.reply({ content: "deleted", ephemeral: true });
                 }
                 else {
                     const dm = await user.createDM();
                     const messages = await dm.messages.fetch({ limit: interaction.options.getInteger('amount'), cache: false })
                     messages.forEach(msg => {
-                        msg.delete();
+                        if (msg.author.id === process.env.CLIENT_ID) {
+                            msg.delete();
+                        interaction.reply({ content: "deleted", ephemeral: true });
+                        }
                     });
-                    //console.log(messages.toJSON())
-                    interaction.reply({ content: "deleted", ephemeral: true });
                 }
             }
             else return interaction.reply(`You can at most delete 50 messages at once.`);      

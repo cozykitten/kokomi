@@ -26,7 +26,6 @@ async function remindme(timestamp, client) {
 
         const exists = await timestamp in db.reminder;
         if (exists) {
-
             if (db.reminder[timestamp].repeat) {
                 const fuDate = timestamp + db.reminder[timestamp].repeat;
                 db.reminder[fuDate] = db.reminder[timestamp];
