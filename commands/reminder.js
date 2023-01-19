@@ -39,7 +39,7 @@ async function remindme(timestamp, client) {
 
 function getDate(timestamp) {
     let date = new Date(timestamp);
-    const formDate = date.getDate() + "." + date.getMonth() + "." + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
+    const formDate = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
     return formDate;
 }
 
