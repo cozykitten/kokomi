@@ -38,10 +38,8 @@ function embed_index(f_message) {
 
 function editEmbed(message, g_message) {
     const embed = new EmbedBuilder(g_message.embeds[0].data);
-    embed.setTitle(`${embed.title} (updated)`); //log and check, cuz it edits title to undefined, for now made title required, revert this
 
-    if (message.options.getString('title')) embed.setTitle(`${message.options.getString('title')} (updated)`);
-    embed.setDescription(`[original entry](https://discord.com/channels/${g_message.guild.id}/${g_message.channel.id}/${g_message.id})`);
+    if (message.options.getString('title')) embed.setTitle(message.options.getString('title'));
     if (message.options.getString('description')) embed.data.fields[0] = {
         name: 'Description',
         value: message.options.getString('description').replace(/\s?\\n\s?/g, "\n")
@@ -62,11 +60,11 @@ function editEmbed(message, g_message) {
 function markEmbed(del, g_message, msg) {
     const embed = new EmbedBuilder(g_message.embeds[0].data);
     if (del) {
-        embed.setTitle(`${embed.title} (deleted)`);
+        embed.setTitle(`${embed.data.title} (deleted)`);
         embed.setColor('#cf7c7c');
     }
     else {
-        embed.setTitle(`${embed.title} (outdated)`);
+        embed.setTitle(`${embed.data.title} (outdated)`);
         embed.setColor('#e4cf99');
         embed.setDescription(`[updated entry](https://discord.com/channels/${msg.guild.id}/${msg.channel.id}/${msg.id})`);
     }
@@ -120,12 +118,10 @@ module.exports = {
 
             const g_message = await message.options.getChannel('channel').messages.fetch(message.options.getString('message'));
             if (message.options.getString('file')) {
-                const new_message = await message.options.getChannel('channel').send({ embeds: [editEmbed(message, g_message)], files: [message.options.getString('file')] });
-                g_message.edit({ embeds: [markEmbed(false, g_message, new_message)] });
+                g_message.edit({ embeds: [editEmbed(message, g_message)], files: [message.options.getString('file')] });
             }
             else {
-                const new_message = await message.options.getChannel('channel').send({ embeds: [editEmbed(message, g_message)] });
-                g_message.edit({ embeds: [markEmbed(false, g_message, new_message)] });
+                g_message.edit({ embeds: [editEmbed(message, g_message)] });
             }
             message.reply({ content: 'entry updated', ephemeral: true });
         }
