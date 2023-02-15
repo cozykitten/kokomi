@@ -40,9 +40,9 @@ module.exports = {
                     messages.forEach(msg => {
                         if (msg.author.id === process.env.CLIENT_ID) {
                             msg.delete();
-                            interaction.reply({ content: "deleted", ephemeral: true });
                         }
                     });
+                    interaction.reply({ content: "deleted", ephemeral: true });
                 }
                 else {
                     const dm = await user.createDM();
@@ -50,9 +50,9 @@ module.exports = {
                     messages.forEach(msg => {
                         if (msg.author.id === process.env.CLIENT_ID) {
                             msg.delete();
-                        interaction.reply({ content: "deleted", ephemeral: true });
                         }
                     });
+                    interaction.reply({ content: "deleted", ephemeral: true });
                 }
             }
             else return interaction.reply(`You can at most delete 50 messages at once.`);      
