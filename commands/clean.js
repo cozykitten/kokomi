@@ -76,7 +76,7 @@ module.exports = {
 
                 await deleteMessageAmount(interaction);
             }
-            else return interaction.reply(`You can at most delete 50 messages at once.`);      
+            else return interaction.reply(`You can at most delete 100 messages at once.`);      
         }
         else return interaction.reply('Specify message ID or amount');
     }
