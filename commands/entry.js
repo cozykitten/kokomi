@@ -95,7 +95,8 @@ module.exports = {
         .addSubcommand(subcommand => subcommand.setName('delete').setDescription('delete entry')
             .addChannelOption(option => option.setName('channel').setDescription('source channel').setRequired(true))
             .addStringOption(option => option.setName('message').setDescription('message id').setRequired(true)))
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
+        .setDMPermission(false),
     async execute(message) {
 
         if (message.options.getSubcommand() === 'add') {

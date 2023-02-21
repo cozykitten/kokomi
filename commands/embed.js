@@ -103,7 +103,8 @@ module.exports = {
             .addStringOption(option => option.setName('message').setDescription('message id').setRequired(true)))
         .addSubcommand(subcommand => subcommand.setName('delete').setDescription('delete a saved embed')
             .addStringOption(option => option.setName('name').setDescription('embed name').setRequired(true)))
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
+        .setDMPermission(false),
     async execute(message) {
 
         const sub = message.options.getSubcommand();

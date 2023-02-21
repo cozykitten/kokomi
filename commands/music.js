@@ -26,7 +26,8 @@ module.exports = {
             .addBooleanOption(option => option.setName('toggle').setDescription('true / false').setRequired(true)))
         .addSubcommand(subcommand => subcommand.setName('queue').setDescription('shows the queue'))
         .addSubcommand(subcommand => subcommand.setName('playlists').setDescription('lists saved playlists'))
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
+        .setDMPermission(false),
 
     async execute(message) {
 

@@ -8,7 +8,8 @@ module.exports = {
 			option.setName('channel')
 				.setDescription('the channel to clone')
 				.setRequired(false))
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels)
+        .setDMPermission(false),
     async execute(message) {
         
             let channel = message.options.getChannel('channel');
