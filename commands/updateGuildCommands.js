@@ -118,8 +118,7 @@ module.exports = {
             .addBooleanOption(option => option.setName('restricted').setDescription('restricted command set'))
             .addStringOption(option => option.setName('id').setDescription('target server id')))
         .addSubcommand(subcommand => subcommand.setName('global').setDescription('updates global application commands'))
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-        .setDMPermission(true),
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
 	async execute(interaction){
 
@@ -153,6 +152,7 @@ module.exports = {
          */
         const fullCommands = interaction.options.getBoolean('restricted') ? commandList(command_files, restricted, 'restricted') : commandList(command_files);
         const commands = fullCommands.filter(e => !new Set(global).has(e.name));
+        //console.log(commands)
 
         if (interaction.options.getBoolean('all')) {
             await interaction.reply({ content: 'updating application commands now...', ephemeral: false });
