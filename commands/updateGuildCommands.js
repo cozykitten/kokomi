@@ -138,7 +138,7 @@ module.exports = {
 
 
         if (interaction.options.getSubcommand() === 'global') {
-            await registerGlobal(rest, []);
+            //await registerGlobal(rest, []);
             const success = await registerGlobal(rest, commandList(command_files, global, 'GLOBAL'));
 
             if (success) return interaction.reply({ content: `Successfully registered GLOBAL application commands <:ZeroCool:1038896868987510794>`, ephemeral: false });
@@ -152,12 +152,11 @@ module.exports = {
          */
         const fullCommands = interaction.options.getBoolean('restricted') ? commandList(command_files, restricted, 'restricted') : commandList(command_files);
         const commands = fullCommands.filter(e => !new Set(global).has(e.name));
-        //console.log(commands)
 
         if (interaction.options.getBoolean('all')) {
             await interaction.reply({ content: 'updating application commands now...', ephemeral: false });
 
-            await registerAll(rest, interaction, []);
+            //await registerAll(rest, interaction, []);
             const count = await registerAll(rest, interaction, commands)
 
             if (count) interaction.editReply({ content: `Successfully registered application commands for ${count} guilds`, ephemeral: false });
@@ -173,7 +172,7 @@ module.exports = {
                 guildID = interaction.guild.id;
             }
 
-            await register(rest, guildID, []);
+            //await register(rest, guildID, []);
             const success = await register(rest, guildID, commands);
 
             if (success) interaction.reply({ content: `Successfully registered application commands for ${interaction.options.getString('id') ? guildID : 'this guild'} <:ZeroCool:1038896868987510794>`, ephemeral: false });
