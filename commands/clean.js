@@ -2,6 +2,12 @@ const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 require('dotenv').config();
 
 
+/**
+ * Deletes a message by the id given as interaction option.
+ * 
+ * @param {ChatInputCommandInteraction} interaction The interaction triggering the command.
+ * @returns {Promise <(Message|InteractionResponse)>} 
+ */
 async function deleteMessageId(interaction) {
     try {
         const m = await interaction.channel.messages.fetch(interaction.options.getString('id'));
@@ -17,6 +23,14 @@ async function deleteMessageId(interaction) {
     }
 }
 
+/**
+ * Deletes multiple messages.
+ * Depending on the age of the messages this function may use bulkDelete to immediately delete all messages
+ * or delete every message iteratively.
+ * 
+ * @param {ChatInputCommandInteraction} interaction The interaction triggering the command.
+ * @returns {Promise<void>}
+ */
 async function deleteMessageAmount(interaction) {
 
     let messages;
