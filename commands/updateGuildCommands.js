@@ -40,7 +40,7 @@ function commandList(command_files, modified_set, set_name) {
  * @param {REST} rest 
  * @param {string} guildID Id of the guild to register.
  * @param {any[]} commands Commands to register, empty array to unregister.
- * @returns {boolean} True if successful.
+ * @returns {Promise<boolean>} True if successful.
  */
 async function register(rest, guildID, commands) {
     let success = false;
@@ -66,7 +66,7 @@ async function register(rest, guildID, commands) {
  * @param {REST} rest 
  * @param {any} message Interaction triggering this command to send messages on error.
  * @param {any[]} commands Commands to register, empty array to unregister.
- * @returns {number} Count of successfully registered guilds.
+ * @returns {Promise<number>} Count of successfully registered guilds.
  */
 async function registerAll(rest, message, commands) {
     let count = 0;
@@ -92,7 +92,7 @@ async function registerAll(rest, message, commands) {
  * 
  * @param {REST} rest 
  * @param {any[]} commands Commands to register globally, empty array to unregister.
- * @returns {boolean} True if successful.
+ * @returns {Promise<boolean>} True if successful.
  */
 async function registerGlobal(rest, commands) {
     let success = false;
