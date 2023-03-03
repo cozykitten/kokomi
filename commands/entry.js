@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
+require('dotenv').config();
 
 function createEmbed(message) {
     const embed = new EmbedBuilder()
@@ -110,7 +111,7 @@ module.exports = {
                 f_message = await message.options.getChannel('channel').send({ embeds: [a_embed] });
             }
 
-            if (message.guild.id === '939260217491869726') {
+            if (message.guild.id === process.env.ENTRY) {
                 await message.guild.channels.cache.get('940722992265183332').send({ embeds: [embed_index(f_message)] });
             }
             message.reply({ content: 'new entry added', ephemeral: true });
