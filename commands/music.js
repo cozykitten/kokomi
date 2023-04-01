@@ -204,7 +204,7 @@ async function video_player () {
     }
 
     try {
-        const stream = await ytdl(song_q[0].url, { filter: 'audioonly', /* type: 'opus', */ highWaterMark: 1024 * 1024 * 4 });
+        const stream = await ytdl(song_q[0].url, { filter: 'audioonly', /* type: 'opus', */ highWaterMark: 1024 * 1024 * 2 });
 
         const resource = createAudioResource(stream, { inputType: StreamType.Opus });
 

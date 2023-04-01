@@ -38,11 +38,10 @@ module.exports = {
             .addStringOption(option => option.setName('globalpassword').setDescription('your password your logins are encrypted with').setRequired(true))
             .addStringOption(option => option.setName('service').setDescription('name of the service this login is for').setRequired(true)))
         .addSubcommand(subcommand => subcommand.setName('list').setDescription('list your saved services')
-            .addStringOption(option => option.setName('globalpassword').setDescription('your password your logins are encrypted with').setRequired(true)))
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+            .addStringOption(option => option.setName('globalpassword').setDescription('your password your logins are encrypted with').setRequired(true))),
 
     async execute(interaction) {
-        if (!JSON.parse(process.env.TRUSTED).includes(interaction.user.id)) return interaction.reply("Don't bother me");
+        //if (!JSON.parse(process.env.TRUSTED).includes(interaction.user.id)) return interaction.reply("Don't bother me");
 
         if (interaction.options.getSubcommand() === 'add') {
 
