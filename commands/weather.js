@@ -83,6 +83,7 @@ module.exports = {
         
     async execute(interaction) {
         const city = interaction.options.getString('city');
+        await interaction.deferReply();
 
         try {
             const response = await fetch(
@@ -95,11 +96,11 @@ module.exports = {
             }
 
             const weatherData = await response.json();
-            await interaction.reply({ embeds: [await createEmbed(weatherData.location.name, weatherData.data.values)]});
+            await interaction.editReply({ embeds: [await createEmbed(weatherData.location.name, weatherData.data.values)]});
         }
         catch (error) {
             console.error(error);
-            await interaction.reply('There was an error fetching the weather data. Please try again later.');
+            await interaction.editReply('There was an error fetching the weather data. Please try again later.');
         }
     },
 };
