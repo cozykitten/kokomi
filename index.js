@@ -10,7 +10,8 @@ myIntents.add(
     IntentsBitField.Flags.Guilds,
     IntentsBitField.Flags.GuildMessages,
     IntentsBitField.Flags.GuildVoiceStates,
-    IntentsBitField.Flags.MessageContent
+    IntentsBitField.Flags.MessageContent,
+    IntentsBitField.Flags.GuildPresences
     );
 const client = new Client({ intents: myIntents });
 
