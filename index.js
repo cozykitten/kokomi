@@ -1,7 +1,6 @@
 require('dotenv').config();
 const fs = require('fs');
-const { lb, synclb } = require('./dbManager');
-const{ Client, IntentsBitField, Collection, EmbedBuilder, embedLength } = require("discord.js");
+const{ Client, IntentsBitField, Collection } = require("discord.js");
 //const { loadReminders } = require('./commands/reminder'); for directly calling loadReminders(client);
 
 
@@ -20,59 +19,8 @@ const client = new Client({ intents: myIntents });
 client.once('ready', () => {
 
     console.log(`\nClient has logged in as ${client.user.tag}`);
-
-    //checking last exit
-    if (!lb.lastexit) {
-        const embed = new EmbedBuilder()
-        .setTitle('crash report')
-        .setColor('#c43838');
-
-        if (lb.lastcall.subcommand) {
-            embed.data.fields = [{
-                name: 'command',
-                value: lb.lastcall.command + ' ' + lb.lastcall.subcommand,
-                inline: true
-            }];
-        }
-        else {
-            embed.data.fields = [{
-                name: 'command',
-                value: lb.lastcall.command,
-                inline: true
-            }];
-        }
-
-        embed.data.fields.push({
-            name: 'requested by',
-            value: '<@' + lb.lastcall.userid + '>',
-            inline: true
-        });
-
-        if (lb.lastcall.options) {
-            let options = '';
-            for (const i of lb.lastcall.options) {
-                options = options + i.name + ': ' + i.value + '\n'
-            }
-            embed.data.fields.push({
-                name: 'options',
-                value: options
-            });
-        }
-
-        client.guilds.fetch(process.env.HOME)
-        .then((server) => {
-            return server.channels.fetch(process.env.LOG);
-        }).then((channel) => {
-            channel.send({ content: "last exit: unplanned", embeds: [embed] })
-        })
-    }
-    else {
-        //lb.lastexit = false;
-        synclb(lb);
-    }
-
-    //loading reminders
-    client.commands.get('reminder').loadReminders(client);
+    const onceReady = require('./onceReady');
+    onceReady(client);
 })
 
 

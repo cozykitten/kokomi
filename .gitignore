@@ -1,7 +1,8 @@
 # custom
+.gitignore
 commands/old/
 words*.json
-logDb.json
+logDb*.json
 creds.json
 .vscode/
 kokomi.code-workspace
