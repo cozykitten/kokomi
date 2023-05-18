@@ -1,5 +1,4 @@
 # custom
-.gitignore
 commands/old/
 words*.json
 logDb*.json
