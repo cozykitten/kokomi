@@ -16,7 +16,7 @@ async function remindme(timestamp, client) {
         await user.send({ embeds: [embed] });
     } catch (e) {
         console.error("Cannot send messages to " + user.username);
-        const server = await client.guilds.cache.get(process.env.HOME); //use fetch
+        const server = await client.guilds.cache.get(process.env.HOME);
 		const channel = await server.channels.cache.get(process.env.LOG);
         channel.send("Cannot send messages to " + user.username);
     }
@@ -118,6 +118,10 @@ module.exports = {
                 if (db.reminder[key].uid === interaction.user.id) {
                     reminderList.push(db.reminder[key].event);
                 }
+            }
+
+            if (reminderList.length <= 0) {
+                return interaction.reply({ content: 'You didn\'t set any reminders' })
             }
 
             const replyEmbed = new EmbedBuilder()
