@@ -102,5 +102,5 @@ module.exports = {
             console.error(error);
             await interaction.editReply('There was an error fetching the weather data. Please try again later.');
         }
-    },
+    }
 };

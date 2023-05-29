@@ -123,7 +123,7 @@ module.exports = {
 	async execute(interaction){
 
         //command may only be used by developer
-        if (!JSON.parse(process.env.AUTHOR) === interaction.user.id) return interaction.reply('Why would I listen to you?');
+        if (!JSON.parse(process.env.AUTHOR) === interaction.user.id) return interaction.reply('This command is not available for public useage.');
 
         const rest = new REST({ version: '10' }).setToken(process.env.KOKOMI_TOKEN);
 
