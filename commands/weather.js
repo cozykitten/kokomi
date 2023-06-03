@@ -33,7 +33,7 @@ async function createEmbed(city, data) {
     }
 
     weatherIcon = {
-        0: "https://cdn.discordapp.com/avatars/882749662099030078/56a6fbeb207fa08983464fe3a5f6f9d6.png",
+        0: "https://raw.githubusercontent.com/cozykitten/kokomi/master/icons/missing.png",
         1000: "https://raw.githubusercontent.com/cozykitten/kokomi/master/icons/clear-day.png",
         1100: "https://raw.githubusercontent.com/cozykitten/kokomi/master/icons/mostly-clear-day.png",
         1101: "https://raw.githubusercontent.com/cozykitten/kokomi/master/icons/partly-cloudy-day.png",

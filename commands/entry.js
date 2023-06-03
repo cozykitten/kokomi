@@ -111,7 +111,7 @@ module.exports = {
                 f_message = await message.options.getChannel('channel').send({ embeds: [a_embed] });
             }
 
-            if (message.guild.id === process.env.ENTRY) {
+            if (message.guild.id === process.env.KOKOMI_ENTRY) {
                 await message.guild.channels.cache.get('940722992265183332').send({ embeds: [embed_index(f_message)] });
             }
             message.reply({ content: 'new entry added', ephemeral: true });

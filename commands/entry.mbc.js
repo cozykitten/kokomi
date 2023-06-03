@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
+require('dotenv').config();
 
 function embed_create(message) {
     var embed = new EmbedBuilder()
@@ -119,7 +120,7 @@ module.exports = {
                 f_message = await channel_A.send({ embeds: [a_embed] });
             }
 
-            if (message.guild.id === '939260217491869726') {
+            if (message.guild.id === process.env.KOKOMI_ENTRY) {
                 await message.guild.channels.cache.get('940722992265183332').send({ embeds: [embed_index(f_message)] });
             }
 
