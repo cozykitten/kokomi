@@ -19,12 +19,7 @@ module.exports = {
 				console.error(err);
 				process.exit(2);
 			}
-		
-			pm2.stop('ecosystem.config.js', function (err, apps) {
-				pm2.disconnect();
-				console.log('disconnected from pm2')
-				if (err) throw err
-			});
+			pm2.stop('ecosystem.config.js');
 		});
 
 

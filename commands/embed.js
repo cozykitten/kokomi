@@ -134,7 +134,6 @@ module.exports = {
                         })
                     }
                     sync(db);
-                    //console.log(db);
                     message.reply(`I saved your embed as '${message.options.getString('name')}'`);
                 }
                 else {

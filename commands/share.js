@@ -32,10 +32,7 @@ module.exports = {
         for (const uid of users) {
             const user = await client.users.fetch(uid);
             try {
-                const sent = await user.send(interaction.options.getString('message').replace(/\s?\\n\s?/g, "\n"));
-                if (sent) {
-                    console.log('sent to: ' + user.username);//remove if and const sent
-                }
+                await user.send(interaction.options.getString('message').replace(/\s?\\n\s?/g, "\n"));
             } catch (e) {
                 console.error("Cannot send messages to " + user.username);
                 fail.push(user.username);

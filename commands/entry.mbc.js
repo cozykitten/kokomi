@@ -26,8 +26,6 @@ function embed_create(message) {
             });
     if (/image\s?"([^"]+)"/.test(message.content)) embed.setImage(message.content.match(/image\s?"([^"]+)"/)[1]);
 
-    //console.log(`embed control:\n${JSON.stringify(embed, null, 2)}\n\n`);
-    //message.channel.send({ embeds: [embed] });
     return embed;
 
 }

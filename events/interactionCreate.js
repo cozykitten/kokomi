@@ -35,6 +35,4 @@ module.exports = async (client, interaction) => {
 	for (const iterator of interaction.options._hoistedOptions) {
 		console.log(iterator.name);
 	}
-	//console.log('\nInteraction:')
-	//console.log(lb.lastcall)
 }

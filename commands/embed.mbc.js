@@ -15,7 +15,6 @@ function embed_create(message) {
         .setImage(/image\s?"([^"]+)"/.test(message.content) ? message.content.match(/image\s?"([^"]+)"/)[1] : null)
         .setThumbnail(/thumbnail\s?"([^"]+)"/.test(message.content) ? message.content.match(/thumbnail\s?"([^"]+)"/)[1] : null);
 
-    //console.log(`embed control:\n${JSON.stringify(embed, null, 2)}\n\n`);
     message.channel.send({ embeds: [embed] });
     return embed;
 
@@ -121,7 +120,6 @@ module.exports = {
                             })
                         }
                         sync(db);
-                        console.log(db);
                         message.channel.send(`I saved your embed as '${e_name}'`);
                     }
                     else {

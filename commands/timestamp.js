@@ -14,8 +14,6 @@ module.exports = {
 
         const match = /\d{4} \d{2} \d{2}( \d{4})?/g.exec(interaction.options.getString('date'));
         if (!match) {
-            console.log(match)
-            console.log(interaction.options.getString('date'))
             return interaction.reply({ content: `Please enter a date in ''date in yyyy mm dd HHMM'' format.`, ephemeral: true });
         }
 

@@ -12,15 +12,12 @@ module.exports = {
         const args = message.content.split(/ +/, 5).slice(2, 5);
 
         var g_channel = await message.guild.channels.cache.get(args[0]);
-        console.log(g_channel);
         var g_message = await g_channel.messages.fetch(args[1]);
-        console.log(g_message);
 
         /* await the users who reacted to g_message and store them in an array */
         const { users } = await g_message.reactions.cache.first().fetch();
         const g_users = await users.fetch();
         const g_winners = Array.from(g_users.values());
-        //console.log(`userarray\n${g_winners}\n`);
 
         const embed = new EmbedBuilder()
             .setTitle('entries')
@@ -34,10 +31,7 @@ module.exports = {
         if (!addUser.size) return message.channel.send('command timed out');
 
         var addList = addUser.first().content;
-        //console.log(addList);
         if (addList.startsWith('add')) {
-            //addList = addList.substr(4).split(/ +/);
-            //console.log(`\n${addList}`);
             g_winners.push(addList.substr(4).split(/ +/));
         }
         else if (addList.startsWith('done')) {
@@ -54,7 +48,6 @@ module.exports = {
 
         /* determine one user out of that array at random */
         var randomUser = g_winners[Math.floor(Math.random() * g_winners.length)];
-        console.log(`some random user\n${randomUser}\n`);
         message.channel.send(`winner: ${randomUser}\nPlease provide the ID of the channel you want me to post the winning announcement in.`);
 
         const filter2 = m => m.author.id === message.author.id;
