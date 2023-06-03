@@ -6,7 +6,7 @@ module.exports = {
 	description: "custom notification system",
 	async execute(message, client) {
 
-		const Server = client.guilds.cache.get(process.env.HOME);
+		const Server = client.guilds.cache.get(process.env.KOKOMI_HOME);
 		const Channel = Server.channels.cache.get('882750410954276911');
 		//Channel.send(message.content.slice(22).trim());
 

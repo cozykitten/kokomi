@@ -1,5 +1,6 @@
 require('dotenv').config();
 const fs = require('fs');
+const { lb, synclb } = require('./dbManager');
 const{ Client, IntentsBitField, Collection } = require("discord.js");
 //const { loadReminders } = require('./commands/reminder'); for directly calling loadReminders(client);
 
@@ -59,4 +60,12 @@ for (const file of event_files) {
 client.login(process.env.KOKOMI_TOKEN)
 
 
-
+//planned exit
+process.on('SIGINT', async () => {
+    console.log('exit command received..');
+    lb.lastexit = true;
+    await synclb(lb);
+    await client.destroy();
+    process.exit();
+}
+);

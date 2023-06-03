@@ -16,8 +16,8 @@ async function remindme(timestamp, client) {
         await user.send({ embeds: [embed] });
     } catch (e) {
         console.error("Cannot send messages to " + user.username);
-        const server = await client.guilds.cache.get(process.env.HOME);
-		const channel = await server.channels.cache.get(process.env.LOG);
+        const server = await client.guilds.cache.get(process.env.KOKOMI_HOME);
+		const channel = await server.channels.cache.get(process.env.KOKOMI_LOG);
         channel.send("Cannot send messages to " + user.username);
     }
 

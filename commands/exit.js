@@ -1,6 +1,8 @@
 const { SlashCommandBuilder } = require('discord.js');
 require('dotenv').config();
 const { lb, synclb } = require('../dbManager');
+const pm2 = require('pm2');
+
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -10,10 +12,26 @@ module.exports = {
 
 		if (!JSON.parse(process.env.TRUSTED).includes(interaction.user.id)) return interaction.reply('Why would I listen to you?');
 		await interaction.reply({ content: 'Good night! <:KeqingSleep:1038896867305603122>', ephemeral: true});
+
+
+		pm2.connect(function (err) {
+			if (err) {
+				console.error(err);
+				process.exit(2);
+			}
 		
-		lb.lastexit = true;
-		await synclb(lb);
-		await client.destroy();
-		process.exit();
+			pm2.stop('ecosystem.config.js', function (err, apps) {
+				pm2.disconnect();
+				console.log('disconnected from pm2')
+				if (err) throw err
+			});
+		});
+
+
+		// console.log('exiting..');
+		// lb.lastexit = true;
+		// await synclb(lb);
+		// await client.destroy();
+		// process.exit();
 	}
 }
