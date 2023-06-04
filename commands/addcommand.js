@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { PermissionFlagsBits, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
+const { PermissionFlagsBits, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
 require('dotenv').config();
 const fs = require('fs');
 const https = require('https');
@@ -60,6 +60,7 @@ module.exports = {
                             file.close();
                             console.log('File downloaded successfully');
                             confirmation.editReply({ content: 'File downloaded successfully', components: [], ephemeral: true });
+                            postLog(attachment.name, interaction.user.id, true, process.env.KOKOMI_LOG);
                         });
                     });
 
@@ -82,8 +83,35 @@ module.exports = {
                     file.close();
                     console.log('File downloaded successfully');
                     interaction.editReply({ content: 'File downloaded successfully', ephemeral: true });
+                    postLog(attachment.name, interaction.user.id, false, process.env.KOKOMI_LOG);
                 });
             });
         }
     }
 };
+
+async function postLog(file, userid, overwrite, log) {
+
+    const embed = new EmbedBuilder()
+        .setTitle('new command added')
+        .setColor('#e4cf99');
+
+    embed.data.fields = [{
+        name: 'filename',
+        value: file,
+        inline: true
+    }];
+
+    embed.data.fields.push({
+        name: 'sent by',
+        value: '<@' + userid + '>',
+        inline: true
+    });
+
+    embed.data.fields.push({
+        name: 'overwrite',
+        value: overwrite
+    });
+    
+    log.send({ embeds: [embed] });
+}
