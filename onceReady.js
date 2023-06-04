@@ -95,10 +95,10 @@ async function github(owner, repo, discordUser) {
                 try {
                     await discordUser.send(`New release available: ${latestRelease[0].name}\nhttps://github.com/${owner}/${repo}/releases`);
                 } catch (e) {
-                    console.error("Cannot send messages to " + owner.username);
+                    console.error("Cannot send messages to " + discordUser.username);
                     const server = await client.guilds.cache.get(process.env.KOKOMI_HOME); 
                     const channel = await server.channels.cache.get(process.env.KOKOMI_LOG);
-                    channel.send("Cannot send messages to " + owner.username);
+                    channel.send("Cannot send messages to " + discordUser.username);
                 }
             } else {
                 return;
