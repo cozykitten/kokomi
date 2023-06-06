@@ -11,10 +11,13 @@ module.exports = {
         .addAttachmentOption(option => option.setName('command').setDescription('command file').setRequired(true))
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
         
-    async execute(interaction) {
+    async execute(interaction, client) {
 
         //command may only be used by developer
         if (!JSON.parse(process.env.AUTHOR) === interaction.user.id) return interaction.reply('This command is not available for public useage.');
+
+        const server = await client.guilds.cache.get(process.env.KOKOMI_HOME);
+        const channel = await server.channels.cache.get(process.env.KOKOMI_LOG);
 
         const attachment = await interaction.options.getAttachment('command');
         const filePath = './commands/' + attachment.name;
@@ -60,8 +63,6 @@ module.exports = {
                             file.close();
                             console.log('File downloaded successfully');
                             confirmation.editReply({ content: 'File downloaded successfully', components: [], ephemeral: true });
-                            const server = await client.guilds.cache.get(process.env.KOKOMI_HOME); 
-                            const channel = await server.channels.cache.get(process.env.KOKOMI_LOG);
                             postLog(attachment.name, interaction.user.id, true, channel);
                         });
                     });
@@ -70,7 +71,7 @@ module.exports = {
                     return confirmation.update({ content: 'Download cancelled', components: [], ephemeral: true });
                 }
             } catch (e) {
-                logError(interaction.user.id, 'addcommand', 'trying to overwrite file');
+                logError(interaction.user.id, 'addcommand', 'trying to overwrite file', channel);
                 return interaction.editReply({ content: 'Download cancelled due to inactivity', components: [], ephemeral: true });
             }
 
@@ -86,8 +87,6 @@ module.exports = {
                     file.close();
                     console.log('File downloaded successfully');
                     interaction.editReply({ content: 'File downloaded successfully', ephemeral: true });
-                    const server = await client.guilds.cache.get(process.env.KOKOMI_HOME); 
-                    const channel = await server.channels.cache.get(process.env.KOKOMI_LOG);
                     postLog(attachment.name, interaction.user.id, false, channel);
                 });
             });
@@ -121,9 +120,7 @@ async function postLog(file, userid, overwrite, log) {
     log.send({ embeds: [embed] });
 }
 
-async function logError(userid, cmdName, location) {
-    const server = await client.guilds.cache.get(process.env.KOKOMI_HOME); 
-    const channel = await server.channels.cache.get(process.env.KOKOMI_LOG);
+async function logError(userid, cmdName, location, channel) {
 
     const embed = new EmbedBuilder()
         .setTitle('error log')
