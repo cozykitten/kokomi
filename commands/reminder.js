@@ -63,7 +63,7 @@ async function repeatTimeout(fuDate, client) {
 }
 
 function getDate(timestamp) {
-    let date = new Date(timestamp);
+    const date = new Date(timestamp);
     const formDate = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
     return formDate;
 }
@@ -144,7 +144,8 @@ module.exports = {
 
             for (const key in db.reminder) {
                 if (db.reminder[key].uid === interaction.user.id) {
-                    reminderList.push(db.reminder[key].event);
+                    const date = new Date(Number(key));
+                    reminderList.push(date.getDate() + '.' + (date.getMonth() + 1) + '.' + ' | ' + db.reminder[key].event);
                 }
             }
 
