@@ -2,7 +2,7 @@ const { Routes } = require('discord.js');
 const { REST } = require('@discordjs/rest');
 require('dotenv').config();
 
-const rest = new REST({ version: '10' }).setToken(process.env.KOKOMI_TOKEN);
+const rest = new REST({ version: '10' }).setToken(process.env.CLIENT_TOKEN);
 
 for (const iterator of JSON.parse(process.env.GUILD_ID)) {
 	rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, iterator), { body: [] })

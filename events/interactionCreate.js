@@ -25,7 +25,7 @@ module.exports = async (client, interaction) => {
 			lb.lastcall.options.push(option);
 		}
 	}
-	await synclb(lb);
+	synclb(lb);
 
 	//execute command
 	const command = client.commands.get(interaction.commandName);

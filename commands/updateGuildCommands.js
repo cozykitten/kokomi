@@ -125,7 +125,7 @@ module.exports = {
         //command may only be used by developer
         if (!JSON.parse(process.env.AUTHOR) === interaction.user.id) return interaction.reply('This command is not available for public useage.');
 
-        const rest = new REST({ version: '10' }).setToken(process.env.KOKOMI_TOKEN);
+        const rest = new REST({ version: '10' }).setToken(process.env.CLIENT_TOKEN);
 
         /**
          * @restricted {string[]} commands registered on guild level for restricted setting

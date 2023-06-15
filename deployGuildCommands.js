@@ -18,10 +18,18 @@ for (const file of command_files) {
 	}
 }
 
-const rest = new REST({ version: '10' }).setToken(process.env.KOKOMI_TOKEN);
+const rest = new REST({ version: '10' }).setToken(process.env.CLIENT_TOKEN);
+register();
 
-for (const iterator of JSON.parse(process.env.GUILD_ID)) {
-	rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, iterator), { body: commands })
-		.then(() => console.log('Successfully registered application commands for ' + iterator))
-		.catch(() => console.error('\x1b[31mMissing access for ' + iterator + '\x1b[0m'));
+async function register() {
+	const iterator = process.env.KOKOMI_HOME;
+	try {
+		await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, iterator), { body: commands })
+
+		if (commands.length) console.log('Successfully registered application commands for ' + iterator);
+		else console.log('Successfully deleted application commands for ' + iterator);
+
+	} catch (e) {
+		console.error('\x1b[31mMissing access for ' + iterator + '\x1b[0m');
+	}
 }

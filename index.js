@@ -58,7 +58,7 @@ for (const file of event_files) {
 
 
 //login
-client.login(process.env.KOKOMI_TOKEN)
+client.login(process.env.CLIENT_TOKEN)
 
 
 //planned exit
@@ -66,7 +66,13 @@ process.on('SIGINT', async () => {
     console.log('exit command received..');
     pm2.disconnect();
     lb.lastexit = true;
-    await synclb(lb);
+    try {
+        await synclb(lb);
+    } catch (error) {
+        const home = await client.guilds.fetch(process.env.KOKOMI_HOME);
+        const log = await home.channels.fetch(process.env.KOKOMI_LOG);
+        await log.send(`Error while syncing the database:\n${error.message}`);
+    }
     await client.destroy();
     process.exit();
 }

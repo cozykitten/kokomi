@@ -3,6 +3,10 @@ const { db, sync } = require('../dbManager');
 const ms = require('ms');
 require('dotenv').config();
 
+/*
+TODO: switch to using npm croner
+*/
+
 async function remindme(timestamp, client) {
 
     //build embed with db saved date and event name, send over client in dms
@@ -35,6 +39,27 @@ async function remindme(timestamp, client) {
             sync(db);
         }
     }
+}
+
+async function repeatTimeout(fuDate, client) {
+
+    const date = Date.now();
+    const time = fuDate - date;
+
+    if (fuDate <= date) {
+        remindme(fuDate, client);
+    }
+    else {
+        if (time > 2147483646) {
+            const timeout = setTimeout(repeatTimeout, 2147400000, fuDate, client);
+            db.reminder[fuDate].timeoutID = timeout[Symbol.toPrimitive]();
+        }
+        else {
+            const timeout = setTimeout(remindme, time, fuDate, client);
+            db.reminder[fuDate].timeoutID = timeout[Symbol.toPrimitive]();
+        }
+    }
+    sync(db);
 }
 
 function getDate(timestamp) {
@@ -76,9 +101,6 @@ module.exports = {
                 else return interaction.reply({ content: 'not a valid time' });
             }
 
-            if (time > 2147483646) {
-                return interaction.reply({ content: 'Cannot set a reminder for longer than ``24d 18h``' });
-            }
             if (time < 5000) {
                 return interaction.reply({ content: 'Cannot set a reminder shorter than ``5s``' });
             }
@@ -90,17 +112,23 @@ module.exports = {
                 db.reminder = {};
             }
 
-            const timeout = setTimeout(remindme, time, fuDate, client);
-
             db.reminder[fuDate] = {
                 "uid": interaction.user.id,
-                "event": interaction.options.getString('event'),
-                "timeoutID": timeout[Symbol.toPrimitive]()
+                "event": interaction.options.getString('event')
             }
 
             if (interaction.options.getString('repeat')) {
                 const interval = Number(interaction.options.getString('repeat'))
                 db.reminder[fuDate].repeat = interval;
+            }
+
+            if (time > 2147483646) {
+                const timeout = setTimeout(repeatTimeout, 2147400000, fuDate, client);
+                db.reminder[fuDate].timeoutID = timeout[Symbol.toPrimitive]();
+            }
+            else {
+                const timeout = setTimeout(remindme, time, fuDate, client);
+                db.reminder[fuDate].timeoutID = timeout[Symbol.toPrimitive]();
             }
 
             sync(db);
@@ -160,8 +188,15 @@ module.exports = {
                     remindme(fuDate, client);
                 }
                 else {
-                    const timeout = setTimeout(remindme, fuDate - date, fuDate, client);
-                    db.reminder[key].timeoutID = timeout[Symbol.toPrimitive]();
+                    const time = fuDate - date;
+                    if (time > 2147483646) {
+                        const timeout = setTimeout(repeatTimeout, 2147400000, fuDate, client);
+                        db.reminder[key].timeoutID = timeout[Symbol.toPrimitive]();
+                    }
+                    else {
+                        const timeout = setTimeout(remindme, time, fuDate, client);
+                        db.reminder[key].timeoutID = timeout[Symbol.toPrimitive]();
+                    }
                 }
             }
             sync(db);
