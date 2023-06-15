@@ -9,8 +9,7 @@ module.exports = {
         .setName('appointment')
         .setDescription('view and set your appointments')
         .addIntegerOption(option => option.setName('month').setDescription('month').setMaxValue(11).setMinValue(0).setRequired(true))
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
-        .setDMPermission(true),
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
     async execute(interaction) {
 

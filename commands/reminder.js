@@ -78,7 +78,8 @@ module.exports = {
             .addStringOption(option => option.setName('repeat').setDescription('repeat interval').addChoices(
                 { name: 'Daily', value: '86400000' },
                 { name: 'Weekly', value: '604800000' },
-                { name: 'Bi-weekly', value: '1209600000' }
+                { name: 'Bi-weekly', value: '1209600000' },
+                { name: '30-days', value: '2592000000' }
             )))
         .addSubcommand(subcommand => subcommand.setName('list').setDescription('view a list of your reminders'))
         .addSubcommand(subcommand => subcommand.setName('delete').setDescription('delete one of your reminders')
