@@ -79,7 +79,7 @@ module.exports = {
                 { name: 'Daily', value: '86400000' },
                 { name: 'Weekly', value: '604800000' },
                 { name: 'Bi-weekly', value: '1209600000' },
-                { name: '30-days', value: '2592000000' }
+                { name: 'Monthly', value: '86400000' }
             )))
         .addSubcommand(subcommand => subcommand.setName('list').setDescription('view a list of your reminders'))
         .addSubcommand(subcommand => subcommand.setName('delete').setDescription('delete one of your reminders')
@@ -119,7 +119,8 @@ module.exports = {
             }
 
             if (interaction.options.getString('repeat')) {
-                const interval = Number(interaction.options.getString('repeat'))
+                const now = new Date();
+                const interval = Number(interaction.options.getString('repeat')) * new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
                 db.reminder[fuDate].repeat = interval;
             }
 
