@@ -6,7 +6,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('timestamp')
         .setDescription('creates a timestamp based on a date you provide')
-        .addStringOption(option => option.setName('date').setDescription('date in yyyy mm dd HHMM').setRequired(true))
+        .addStringOption(option => option.setName('date').setDescription('date in yyyy mm dd HHMM').setMaxLength(15).setRequired(true))
         .addIntegerOption(option => option.setName('utc').setDescription('utc offset as -6 for CST').setMaxValue(12).setMinValue(-12))
         .setDMPermission(true),
 

@@ -116,7 +116,7 @@ module.exports = {
             .addSubcommand(subcommand => subcommand.setName('guild').setDescription('updates guild level application commands')
             .addBooleanOption(option => option.setName('all').setDescription('update for all trusted guilds'))
             .addBooleanOption(option => option.setName('restricted').setDescription('restricted command set'))
-            .addStringOption(option => option.setName('id').setDescription('target server id')))
+            .addStringOption(option => option.setName('id').setDescription('target server id').setMaxLength(18)))
         .addSubcommand(subcommand => subcommand.setName('global').setDescription('updates global application commands'))
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 

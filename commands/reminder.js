@@ -73,8 +73,8 @@ module.exports = {
 		.setName('reminder')
 		.setDescription('set a reminder')
         .addSubcommand(subcommand => subcommand.setName('add').setDescription('add a new reminder')
-            .addStringOption(option => option.setName('time').setDescription('time').setRequired(true))
-            .addStringOption(option => option.setName('event').setDescription('event').setMaxLength(2000).setRequired(true))
+            .addStringOption(option => option.setName('time').setDescription('time relative to now (12d 15h 5m)').setMaxLength(16).setRequired(true))
+            .addStringOption(option => option.setName('event').setDescription('event title').setMaxLength(256).setRequired(true))
             .addStringOption(option => option.setName('repeat').setDescription('repeat interval').addChoices(
                 { name: 'Daily', value: '86400000' },
                 { name: 'Weekly', value: '604800000' },
@@ -83,7 +83,7 @@ module.exports = {
             )))
         .addSubcommand(subcommand => subcommand.setName('list').setDescription('view a list of your reminders'))
         .addSubcommand(subcommand => subcommand.setName('delete').setDescription('delete one of your reminders')
-            .addStringOption(option => option.setName('event').setDescription('event the reminder is set for').setRequired(true)))
+            .addStringOption(option => option.setName('event').setDescription('event the reminder is set for').setMaxLength(256).setRequired(true)))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
     async execute(interaction, client) {

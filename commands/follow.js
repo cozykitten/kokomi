@@ -6,8 +6,8 @@ module.exports = {
 		.setName('follow')
 		.setDescription('follow a topic')
         .addBooleanOption(option => option.setName('list').setDescription('show a list of topics'))
-        .addStringOption(option => option.setName('remove').setDescription('unfollow a topic'))
-        .addStringOption(option => option.setName('topic').setDescription('select a topic'))
+        .addStringOption(option => option.setName('remove').setDescription('unfollow a topic').setMaxLength(64))
+        .addStringOption(option => option.setName('topic').setDescription('select a topic').setMaxLength(64))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
     async execute(interaction) {

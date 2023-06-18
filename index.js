@@ -20,7 +20,7 @@ const client = new Client({ intents: myIntents });
 //do stuff on ready
 client.once('ready', () => {
 
-    console.log(`\nClient has logged in as ${client.user.tag}`);
+    console.log(`\n\x1b[34mClient has logged in as ${client.user.tag}\x1b[0m`);
     const onceReady = require('./onceReady');
     onceReady(client);
 })

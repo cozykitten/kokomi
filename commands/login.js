@@ -28,17 +28,17 @@ module.exports = {
         .setName('login')
         .setDescription('save and check your logins')
         .addSubcommand(subcommand => subcommand.setName('add').setDescription('add a new login')
-            .addStringOption(option => option.setName('globalpassword').setDescription('your password your logins are encrypted with').setRequired(true))
-            .addStringOption(option => option.setName('service').setDescription('name of the service this login is for').setRequired(true))
-            .addStringOption(option => option.setName('username').setDescription('username of this login'))
-            .addStringOption(option => option.setName('email').setDescription('email of this login'))
-            .addStringOption(option => option.setName('servicepassword').setDescription('password of this login'))
-            .addStringOption(option => option.setName('tag').setDescription('optional tag or display name')))
+            .addStringOption(option => option.setName('globalpassword').setDescription('your password your logins are encrypted with').setMaxLength(256).setRequired(true))
+            .addStringOption(option => option.setName('service').setDescription('name of the service this login is for').setMaxLength(64).setRequired(true))
+            .addStringOption(option => option.setName('username').setDescription('username of this login').setMaxLength(64))
+            .addStringOption(option => option.setName('email').setDescription('email of this login').setMaxLength(64))
+            .addStringOption(option => option.setName('servicepassword').setDescription('password of this login').setMaxLength(256))
+            .addStringOption(option => option.setName('tag').setDescription('optional tag or display name').setMaxLength(64)))
         .addSubcommand(subcommand => subcommand.setName('view').setDescription('display one of your saved logins')
-            .addStringOption(option => option.setName('globalpassword').setDescription('your password your logins are encrypted with').setRequired(true))
-            .addStringOption(option => option.setName('service').setDescription('name of the service this login is for').setRequired(true)))
+            .addStringOption(option => option.setName('globalpassword').setDescription('your password your logins are encrypted with').setMaxLength(256).setRequired(true))
+            .addStringOption(option => option.setName('service').setDescription('name of the service this login is for').setMaxLength(64).setRequired(true)))
         .addSubcommand(subcommand => subcommand.setName('list').setDescription('list your saved services')
-            .addStringOption(option => option.setName('globalpassword').setDescription('your password your logins are encrypted with').setRequired(true))),
+            .addStringOption(option => option.setName('globalpassword').setDescription('your password your logins are encrypted with').setMaxLength(256).setRequired(true))),
 
     async execute(interaction) {
         //if (!JSON.parse(process.env.TRUSTED).includes(interaction.user.id)) return interaction.reply("Don't bother me");

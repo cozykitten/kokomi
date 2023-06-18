@@ -79,7 +79,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('weather')
         .setDescription('Get weather data for a specified city')
-        .addStringOption(option => option.setName('city').setDescription('City name').setRequired(true)),
+        .addStringOption(option => option.setName('city').setDescription('City name').setMaxLength(128).setRequired(true)),
         
     async execute(interaction) {
         const city = interaction.options.getString('city');
