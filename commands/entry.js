@@ -86,7 +86,7 @@ module.exports = {
             .addStringOption(option => option.setName('file').setDescription('file url')))
         .addSubcommand(subcommand => subcommand.setName('edit').setDescription('edit entry')
             .addChannelOption(option => option.setName('channel').setDescription('source channel').setRequired(true))
-            .addStringOption(option => option.setName('message').setDescription('message id').setMaxLength(18).setRequired(true))
+            .addStringOption(option => option.setName('message').setDescription('message id').setMaxLength(20).setRequired(true))
             .addStringOption(option => option.setName('title').setDescription('title').setMaxLength(256))
             .addStringOption(option => option.setName('description').setDescription('description').setMaxLength(1024))
             .addStringOption(option => option.setName('source').setDescription('source url').setMaxLength(1024))
@@ -95,7 +95,7 @@ module.exports = {
             .addStringOption(option => option.setName('file').setDescription('file url')))
         .addSubcommand(subcommand => subcommand.setName('delete').setDescription('delete entry')
             .addChannelOption(option => option.setName('channel').setDescription('source channel').setRequired(true))
-            .addStringOption(option => option.setName('message').setDescription('message id').setMaxLength(18).setRequired(true)))
+            .addStringOption(option => option.setName('message').setDescription('message id').setMaxLength(20).setRequired(true)))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
         .setDMPermission(false),
     async execute(message) {

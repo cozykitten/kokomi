@@ -30,7 +30,7 @@ module.exports = {
 		.setName('cleandm')
 		.setDescription('clean messages from DMs')
         .addIntegerOption(option => option.setName('amount').setDescription('amount of messages to delete').setMaxValue(100).setMinValue(1))
-        .addStringOption(option => option.setName('id').setDescription('message id').setMaxLength(18)),
+        .addStringOption(option => option.setName('id').setDescription('message id').setMaxLength(20)),
 
     async execute(interaction, client) {
 

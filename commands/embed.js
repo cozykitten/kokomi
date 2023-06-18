@@ -100,7 +100,7 @@ module.exports = {
         .addSubcommand(subcommand => subcommand.setName('update').setDescription('update a sent embed')
             .addStringOption(option => option.setName('name').setDescription('embed name').setMaxLength(256).setRequired(true))
             .addChannelOption(option => option.setName('channel').setDescription('source channel').setRequired(true))
-            .addStringOption(option => option.setName('message').setDescription('message id').setMaxLength(18).setRequired(true)))
+            .addStringOption(option => option.setName('message').setDescription('message id').setMaxLength(20).setRequired(true)))
         .addSubcommand(subcommand => subcommand.setName('delete').setDescription('delete a saved embed')
             .addStringOption(option => option.setName('name').setDescription('embed name').setMaxLength(256).setRequired(true)))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)

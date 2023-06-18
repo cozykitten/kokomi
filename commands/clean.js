@@ -73,7 +73,7 @@ module.exports = {
         .setName('clean')
         .setDescription('clean messages from guild text channels')
         .addIntegerOption(option => option.setName('amount').setDescription('amount of messages to delete').setMaxValue(100).setMinValue(1))
-        .addStringOption(option => option.setName('id').setDescription('message id').setMaxLength(18))
+        .addStringOption(option => option.setName('id').setDescription('message id').setMaxLength(20))
         .addUserOption(option => option.setName('user').setDescription('user mentionable'))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
         .setDMPermission(false),
