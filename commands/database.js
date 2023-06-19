@@ -1,5 +1,7 @@
 const { SlashCommandBuilder, ButtonBuilder, ActionRowBuilder } = require('@discordjs/builders');
 const { PermissionFlagsBits, ButtonStyle } = require('discord.js');
+const fs = require('fs');
+const https = require('https');
 require('dotenv').config();
 
 
@@ -14,8 +16,6 @@ async function reloadApplication(client) {
 }
 
 async function getDatabase(interaction) {
-    const fs = require('fs');
-    const https = require('https');
 
     const attachment = await interaction.options.getAttachment('file');
 
@@ -89,8 +89,9 @@ async function sendDatabase(interaction, client) {
 
     const server = await client.guilds.cache.get(process.env.KOKOMI_HOME);
 	const channel = await server.channels.cache.get(process.env.KOKOMI_DATABASE);
+    const file = await fs.promises.readFile('./words.json');
 
-    await channel.send({ files: [{ attachment: './words.json', name: 'words.json', description: 'kokomi\'s main database' }] });
+    await channel.send({ files: [{ attachment: file, name: 'words.json', description: 'kokomi\'s main database' }] });
     interaction.reply({ content: 'Database retrieved.', ephemeral: true });
 }
 
