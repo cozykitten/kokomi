@@ -1,5 +1,5 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { PermissionFlagsBits, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, ButtonBuilder, ActionRowBuilder, EmbedBuilder } = require('@discordjs/builders');
+const { PermissionFlagsBits, ButtonStyle } = require('discord.js');
 require('dotenv').config();
 const fs = require('fs');
 const https = require('https');
