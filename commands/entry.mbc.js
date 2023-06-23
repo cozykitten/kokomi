@@ -19,7 +19,7 @@ function embed_create(message) {
                 value: `${message.author}`,
                 inline: true
             })
-        .setColor('#b6c6e2')
+        .setColor(0xb6c6e2)
         .setFooter(
             {
                 text: /tags\s?"([^"]+)"/.test(message.content) ? `tags: ${message.content.match(/tags\s?"([^"]+)"/)[1]}` : 'tags: ',
@@ -35,7 +35,7 @@ function embed_index(f_message) {
     var embed = new EmbedBuilder()
         .setTitle(`new entry in #${f_message.channel.name}`)
         .setDescription(`${f_message.embeds[0].title}\n${f_message.embeds[0].footer.text}`)
-        .setColor('#b6c6e2')
+        .setColor(0xb6c6e2)
         .setURL(`https://discord.com/channels/${f_message.guild.id}/${f_message.channel.id}/${f_message.id}`);
     return embed;
 }
@@ -67,11 +67,11 @@ function embed_mark(g_message, msg, del) {
     const embed = new EmbedBuilder(g_message.embeds[0].data);
     if (del) {
         embed.setTitle(`${embed.title} (deleted)`);
-        embed.setColor('#cf7c7c');
+        embed.setColor(0xcf7c7c);
     }
     else {
         embed.setTitle(`${embed.title} (outdated)`);
-        embed.setColor('#e4cf99');
+        embed.setColor(0xe4cf99);
         embed.setDescription(`[updated entry](https://discord.com/channels/${msg.guild.id}/${msg.channel.id}/${msg.id})`);
     }
     return embed;
@@ -85,7 +85,7 @@ function embed_help() {
         + '**entry edit <channel_id> <message_id> {parameters}**: Updates parameters of an already sent entry.\n'
         + 'Available parameters are {title "edited title"} {description "edited description"} {source "``new url``"} {tags "edited tags separated by space"} {image "``new url``"} {file "``new url``"}\n\n'
         + '**entry delete <channel_id> <message_id>**: Marks an already sent entry as deleted.')
-        .setColor('#b6c6e2')
+        .setColor(0xb6c6e2)
         .setFooter({ text: '<> = required | {} = optional' })
     return help_embed;
 }

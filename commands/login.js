@@ -94,7 +94,7 @@ module.exports = {
             const replyEmbed = new EmbedBuilder()
                 .setTitle(`Your ${service} login`)
                 .setDescription(plainText.join('\n'))
-                .setColor('#797FCB')
+                .setColor(0x797FCB)
             interaction.reply({ embeds: [replyEmbed], ephemeral: true });
 
         }
@@ -116,7 +116,7 @@ module.exports = {
             const replyEmbed = new EmbedBuilder()
                 .setTitle('Your saved services')
                 .setDescription(plainText.join('\n'))
-                .setColor('#797FCB')
+                .setColor(0x797FCB)
             interaction.reply({ embeds: [replyEmbed], ephemeral: true });
         }
     }

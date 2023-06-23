@@ -17,12 +17,13 @@ async function deleteMessageId(dm, interaction) {
 
 async function deleteMessageAmount(dm, interaction) {
     const messages = await dm.messages.fetch({ limit: interaction.options.getInteger('amount'), cache: false });
-    messages.forEach(msg => {
+    const deletePromises = messages.map(async (msg) => {
         if (msg.author.id === process.env.CLIENT_ID) {
-            msg.delete();
+            await msg.delete();
         }
     });
-    interaction.reply({ content: "deleted", ephemeral: true });
+    await Promise.all(deletePromises);
+    interaction.editReply({ content: "deleted", ephemeral: true });
 }
 
 module.exports = {
@@ -53,10 +54,12 @@ module.exports = {
 
                 const user = await client.users.fetch(interaction.user.id);
                 if (user.dmChannel) {
+                    await interaction.deferReply({ ephemeral: true });
                     await deleteMessageAmount(user.dmChannel, interaction);
                 }
                 else {
                     const dm = await user.createDM();
+                    await interaction.deferReply({ ephemeral: true });
                     await deleteMessageAmount(dm, interaction);
                 }
             }

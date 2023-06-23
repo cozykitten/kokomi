@@ -44,7 +44,7 @@ async function checkLastExit(log) {
 
     const embed = new EmbedBuilder()
         .setTitle('crash report')
-        .setColor('#c43838');
+        .setColor(0xc43838);
 
     if (lb.lastcall.subcommand) {
         embed.data.fields = [{

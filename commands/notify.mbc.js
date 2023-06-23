@@ -16,7 +16,7 @@ module.exports = {
             })
 			.setTitle(`ping in ${message.channel.name}`)
 			.setDescription(message.content.slice(22).trim())
-			.setColor('#b6c6e2')
+			.setColor(0xb6c6e2)
 		Channel.send({ embeds: [help_embed] });
 
 	}

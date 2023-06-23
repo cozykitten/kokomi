@@ -19,7 +19,7 @@ function createEmbed(message) {
                 value: `${message.member}`,
                 inline: true
             })
-        .setColor('#b6c6e2')
+        .setColor(0xb6c6e2)
         .setFooter(
             {
                 text: message.options.getString('tags') ? `tags: ${message.options.getString('tags')}` : 'tags: '
@@ -32,7 +32,7 @@ function embed_index(f_message) {
     var embed = new EmbedBuilder()
         .setTitle(`new entry in #${f_message.channel.name}`)
         .setDescription(`${f_message.embeds[0].data.title}\n${f_message.embeds[0].data.footer.text}`)
-        .setColor('#b6c6e2')
+        .setColor(0xb6c6e2)
         .setURL(`https://discord.com/channels/${f_message.guild.id}/${f_message.channel.id}/${f_message.id}`);
     return embed;
 }
@@ -62,11 +62,11 @@ function markEmbed(del, g_message, msg) {
     const embed = new EmbedBuilder(g_message.embeds[0].data);
     if (del) {
         embed.setTitle(`${embed.data.title} (deleted)`);
-        embed.setColor('#cf7c7c');
+        embed.setColor(0xcf7c7c);
     }
     else {
         embed.setTitle(`${embed.data.title} (outdated)`);
-        embed.setColor('#e4cf99');
+        embed.setColor(0xe4cf99);
         embed.setDescription(`[updated entry](https://discord.com/channels/${msg.guild.id}/${msg.channel.id}/${msg.id})`);
     }
     return embed;

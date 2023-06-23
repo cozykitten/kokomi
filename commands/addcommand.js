@@ -98,7 +98,7 @@ async function postLog(file, userid, overwrite, log) {
 
     const embed = new EmbedBuilder()
         .setTitle('new command added')
-        .setColor('#e4cf99');
+        .setColor(0xe4cf99);
 
     embed.data.fields = [{
         name: 'filename',
@@ -116,7 +116,7 @@ async function postLog(file, userid, overwrite, log) {
         name: 'overwrite',
         value: overwrite
     });
-    
+
     log.send({ embeds: [embed] });
 }
 
@@ -124,7 +124,7 @@ async function logError(userid, cmdName, location, channel) {
 
     const embed = new EmbedBuilder()
         .setTitle('error log')
-        .setColor('#c43838');
+        .setColor(0xc43838);
 
     embed.data.fields = [{
         name: 'command',
