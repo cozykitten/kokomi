@@ -11,9 +11,9 @@ async function remindme(timestamp, client) {
 
     //build embed with db saved date and event name, send over client in dms
     const embed = new EmbedBuilder()
-        .setTitle(`Reminder for ${getDate(timestamp)}`)
+        .setTitle(`Reminder for ${getDate(db.reminder[timestamp].eventDate)}`)
         .setDescription('<:AriNotes:1038919832135024640> | ' + db.reminder[timestamp].event)
-        .setColor('#797FCB');
+        .setColor(0x797FCB);
 
     const user = await client.users.fetch(db.reminder[timestamp].uid);
     try {
@@ -31,9 +31,11 @@ async function remindme(timestamp, client) {
         const exists = await timestamp in db.reminder;
         if (exists) {
             if (db.reminder[timestamp].repeat) {
-                const fuDate = timestamp + db.reminder[timestamp].repeat;
-                db.reminder[fuDate] = db.reminder[timestamp];
-                setTimeout(remindme, db.reminder[timestamp].repeat, fuDate, client);
+                const remindDate = timestamp + db.reminder[timestamp].repeat;
+                const eventDate = db.reminder[timestamp].eventDate + db.reminder[timestamp].repeat;
+                db.reminder[remindDate] = db.reminder[timestamp];
+                db.reminder[remindDate].eventDate = eventDate;
+                setReminder(db.reminder[timestamp].repeat, remindDate, client);
             }
             delete db.reminder[timestamp];
             sync(db);
@@ -41,25 +43,29 @@ async function remindme(timestamp, client) {
     }
 }
 
-async function repeatTimeout(fuDate, client) {
+async function repeatTimeout(remindDate, client) {
 
     const date = Date.now();
-    const time = fuDate - date;
 
-    if (fuDate <= date) {
-        remindme(fuDate, client);
+    if (remindDate <= date) {
+        remindme(remindDate, client);
     }
     else {
-        if (time > 2147483646) {
-            const timeout = setTimeout(repeatTimeout, 2147400000, fuDate, client);
-            db.reminder[fuDate].timeoutID = timeout[Symbol.toPrimitive]();
-        }
-        else {
-            const timeout = setTimeout(remindme, time, fuDate, client);
-            db.reminder[fuDate].timeoutID = timeout[Symbol.toPrimitive]();
-        }
+        const remindTime = remindDate - date;
+        setReminder(remindTime, remindDate, client);
     }
     sync(db);
+}
+
+function setReminder(remindTime, remindDate, client) {
+    if (remindTime > 2147483646) {
+        const timeout = setTimeout(repeatTimeout, 2147400000, remindDate, client);
+        db.reminder[remindDate].timeoutID = timeout[Symbol.toPrimitive]();
+    }
+    else {
+        const timeout = setTimeout(remindme, remindTime, remindDate, client);
+        db.reminder[remindDate].timeoutID = timeout[Symbol.toPrimitive]();
+    }
 }
 
 function getDate(timestamp) {
@@ -73,68 +79,87 @@ module.exports = {
 		.setName('reminder')
 		.setDescription('set a reminder')
         .addSubcommand(subcommand => subcommand.setName('add').setDescription('add a new reminder')
-            .addStringOption(option => option.setName('time').setDescription('time relative to now (12d 15h 5m)').setMaxLength(16).setRequired(true))
             .addStringOption(option => option.setName('event').setDescription('event title').setMaxLength(256).setRequired(true))
-            .addStringOption(option => option.setName('repeat').setDescription('repeat interval').addChoices(
-                { name: 'Daily', value: '86400000' },
-                { name: 'Weekly', value: '604800000' },
-                { name: 'Bi-weekly', value: '1209600000' },
-                { name: 'Monthly', value: '86400000' }
+            .addStringOption(option => option.setName('time').setDescription('time relative to now (12d 15h 5m)').setMaxLength(16).setRequired(true))
+            .addStringOption(option => option.setName('offset').setDescription('amount of time to remind before the event').setMaxLength(16))
+            .addIntegerOption(option => option.setName('repeat').setDescription('repeat interval').addChoices(
+                { name: 'Daily', value: 86400000 },
+                { name: 'Weekly', value: 604800000 },
+                { name: 'Bi-weekly', value: 1209600000 },
+                { name: 'Monthly', value: 1 }
             )))
         .addSubcommand(subcommand => subcommand.setName('list').setDescription('view a list of your reminders'))
         .addSubcommand(subcommand => subcommand.setName('delete').setDescription('delete one of your reminders')
             .addStringOption(option => option.setName('event').setDescription('event the reminder is set for').setMaxLength(256).setRequired(true)))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
-    async execute(interaction, client) {
+    async execute(interaction) {
 
         if (!JSON.parse(process.env.TRUSTED).includes(interaction.user.id)) return interaction.reply("Don't bother me");
 
         if (interaction.options.getSubcommand() === 'add') {
             
             //split complex time (2d 12h) into subtimes and add up ms
+            let eventTime = 0;
             const complexTime = interaction.options.getString('time').split(' ');
-            let time = 0;
             for (const subTime of complexTime) {
                 if (ms(subTime)) {
-                    time += ms(subTime)
+                    eventTime += ms(subTime);
                 }
                 else return interaction.reply({ content: 'not a valid time' });
             }
 
-            if (time < 5000) {
+            let offset = 0;
+            if (interaction.options.getString('offset')) {
+                const complexOffset = interaction.options.getString('offset').split(' ');
+                for (const subOffset of complexOffset) {
+                    if (ms(subOffset)) {
+                        offset += ms(subOffset);
+                    }
+                    else return interaction.reply({ content: 'not a valid offset time' });
+                }
+            }
+
+            const remindTime = eventTime - offset;
+            if (remindTime < 5000) {
                 return interaction.reply({ content: 'Cannot set a reminder shorter than ``5s``' });
             }
 
             //calc future date & store in db
-            const fuDate = Date.now() + time;
+            const eventDate = Date.now() + eventTime;
+            const remindDate = eventDate - offset;
             
             if (!db.reminder) {
                 db.reminder = {};
             }
 
-            db.reminder[fuDate] = {
+            db.reminder[remindDate] = {
                 "uid": interaction.user.id,
-                "event": interaction.options.getString('event')
+                "event": interaction.options.getString('event'),
+                "eventDate": eventDate
             }
 
-            if (interaction.options.getString('repeat')) {
-                const now = new Date();
-                const interval = Number(interaction.options.getString('repeat')) * new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
-                db.reminder[fuDate].repeat = interval;
+            if (interaction.options.getInteger('repeat')) {
+                const repeat = Number(interaction.options.getInteger('repeat'));
+                if (repeat === 1) {
+                    const now = new Date();
+                    const repeat = 86400000 * new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+                    if (offset >= repeat) {
+                        return interaction.reply({ content: 'offset time cam\'t be larger than repeat interval' });
+                    }
+                    db.reminder[remindDate].repeat = repeat;
+                }
+                else {
+                    if (offset >= repeat) {
+                        return interaction.reply({ content: 'offset time cam\'t be larger than repeat interval' });
+                    }
+                    db.reminder[remindDate].repeat = repeat;
+                }
             }
 
-            if (time > 2147483646) {
-                const timeout = setTimeout(repeatTimeout, 2147400000, fuDate, client);
-                db.reminder[fuDate].timeoutID = timeout[Symbol.toPrimitive]();
-            }
-            else {
-                const timeout = setTimeout(remindme, time, fuDate, client);
-                db.reminder[fuDate].timeoutID = timeout[Symbol.toPrimitive]();
-            }
-
+            setReminder(remindTime, remindDate, interaction.client);
             sync(db);
-            interaction.reply({ content: `<:AriNotes:1038919832135024640> I set a reminder for \`\`${interaction.options.getString('event')}\`\` in \`\`${ms(time, { long: true })}\`\``, ephemeral: true });
+            interaction.reply({ content: `<:AriNotes:1038919832135024640> I set a reminder for \`\`${interaction.options.getString('event')}\`\` in \`\`${ms(remindTime, { long: true })}\`\``, ephemeral: true });
         }
         else if (interaction.options.getSubcommand() === 'list') {
 
@@ -146,7 +171,7 @@ module.exports = {
 
             for (const key in db.reminder) {
                 if (db.reminder[key].uid === interaction.user.id) {
-                    const date = new Date(Number(key));
+                    const date = new Date(db.reminder[key].eventDate);
                     reminderList.push(date.getDate() + '.' + (date.getMonth() + 1) + '.' + ' | ' + db.reminder[key].event);
                 }
             }
@@ -158,7 +183,7 @@ module.exports = {
             const replyEmbed = new EmbedBuilder()
                 .setTitle('Your set reminders')
                 .setDescription(reminderList.join('\n'))
-                .setColor('#797FCB')
+                .setColor(0x797FCB)
             interaction.reply({ embeds: [replyEmbed], ephemeral: true });
         }
         else if (interaction.options.getSubcommand() === 'delete') {
@@ -186,20 +211,13 @@ module.exports = {
             const date = Date.now();
             for (const key in db.reminder) {
     
-                const fuDate = Number(key);
-                if (fuDate <= date) {
-                    remindme(fuDate, client);
+                const remindDate = Number(key);
+                if (remindDate <= date) {
+                    remindme(remindDate, client);
                 }
                 else {
-                    const time = fuDate - date;
-                    if (time > 2147483646) {
-                        const timeout = setTimeout(repeatTimeout, 2147400000, fuDate, client);
-                        db.reminder[key].timeoutID = timeout[Symbol.toPrimitive]();
-                    }
-                    else {
-                        const timeout = setTimeout(remindme, time, fuDate, client);
-                        db.reminder[key].timeoutID = timeout[Symbol.toPrimitive]();
-                    }
+                    const remindTime = remindDate - date;
+                    setReminder(remindTime, remindDate, client);
                 }
             }
             sync(db);
