@@ -48,12 +48,12 @@ for (const file of command_files) {
 
 
 //event handler
-const event_files = fs.readdirSync(`./events`).filter(file => /.js|.ts/.test(file));
-for (const file of event_files) {
+const eventFiles = fs.readdirSync(`./events`).filter(file => /.js|.ts/.test(file));
+for (const file of eventFiles) {
 
     const event = require(`./events/${file}`);
-    const event_name = file.split('.')[0];
-    client.on(event_name, event.bind(null, client));
+    const eventName = file.split('.')[0];
+    client.on(eventName, (...args) => event(...args));
 }
 
 
