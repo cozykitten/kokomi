@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const { db } = require('../dbManager');
+const { db } = require('../src/dbManager');
 require('dotenv').config();
 
 module.exports = {

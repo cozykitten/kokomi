@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
-const { db, sync } = require('../dbManager');
+const { db, sync } = require('../src/dbManager');
 
 function createEmbed(message) {
     const embed = new EmbedBuilder()

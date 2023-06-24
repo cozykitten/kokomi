@@ -5,7 +5,7 @@ require('dotenv').config();
 
 
 async function reloadApplication(client) {
-    const { lb, synclb } = require('../dbManager');
+    const { lb, synclb } = require('../src/dbManager');
 
     console.log('reloading application due to database update..');
 	lb.lastexit = true;
@@ -88,7 +88,7 @@ async function sendDatabase(interaction) {
 
     const server = await interaction.client.guilds.cache.get(process.env.KOKOMI_HOME);
 	const channel = await server.channels.cache.get(process.env.KOKOMI_DATABASE);
-    const file = await fs.promises.readFile('./words.json');
+    const file = await fs.promises.readFile('../data/words.json');
 
     await channel.send({ files: [{ attachment: file, name: 'words.json' }] });
     interaction.reply({ content: 'Database retrieved.', ephemeral: true });

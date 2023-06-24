@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
-const { db, sync } = require('../dbManager');
+const { db, sync } = require('../src/dbManager');
 const ms = require('ms');
 require('dotenv').config();
 

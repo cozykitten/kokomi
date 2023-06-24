@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
-const { db, sync } = require('../dbManager');
+const { db, sync } = require('../src/dbManager');
 
 function embed_create(message) {
     let embed = new EmbedBuilder()

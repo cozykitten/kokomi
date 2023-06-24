@@ -1,4 +1,4 @@
-const { lb, synclb } = require('../dbManager');
+const { lb, synclb } = require('../src/dbManager');
 
 module.exports = async (interaction) => {
 

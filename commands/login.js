@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const crypto = require('crypto');
-const { cd, synccd } = require('../dbManager');
+const { cd, synccd } = require('../src/dbManager');
 require('dotenv').config();
 
 function encrypt(plain, globalPass) {

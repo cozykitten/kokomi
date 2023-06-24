@@ -1,14 +1,14 @@
 const fs = require('fs');
 
 function readDatabase(file) {
-    return JSON.parse(fs.readFileSync(file));
+    return JSON.parse(fs.readFileSync(`./data/${file}`));
 }
 
 exports.sync = (db) => new Promise(async (resolve, reject) => {
     try {
-        await fs.promises.writeFile("./words.json", JSON.stringify(db, null, 2));
+        await fs.promises.writeFile("./data/words.json", JSON.stringify(db, null, 2));
 
-        const fileStats = await fs.promises.stat('./words.json');
+        const fileStats = await fs.promises.stat('./data/words.json');
         if (fileStats.size > 50) {
 
             for (let index = 2; index >= 0; index--) {
@@ -25,7 +25,7 @@ exports.sync = (db) => new Promise(async (resolve, reject) => {
                 }
             }
 
-            await fs.promises.copyFile('./words.json', './data/words-0.bak');
+            await fs.promises.copyFile('./data/words.json', './data/words-0.bak');
         }
         resolve();
     } catch (err) {
@@ -35,7 +35,7 @@ exports.sync = (db) => new Promise(async (resolve, reject) => {
 
 exports.synclb = (lb) => new Promise(async (resolve, reject) => {
     try {
-        await fs.promises.writeFile("./logDb.json", JSON.stringify(lb, null, 2));
+        await fs.promises.writeFile("./data/logDb.json", JSON.stringify(lb, null, 2));
         resolve();
     } catch (err) {
         reject(err);
@@ -44,7 +44,7 @@ exports.synclb = (lb) => new Promise(async (resolve, reject) => {
 
 exports.synccd = (cd) => new Promise(async (resolve, reject) => {
     try {
-        await fs.promises.writeFile("./creds.json", JSON.stringify(cd, null, 2));
+        await fs.promises.writeFile("./data/creds.json", JSON.stringify(cd, null, 2));
         resolve();
     } catch (err) {
         reject(err);   

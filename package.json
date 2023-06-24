@@ -2,10 +2,10 @@
   "name": "kokomi",
   "version": "1.0.0",
   "description": "Discord bot for private use",
-  "main": "index.js",
+  "main": "./src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --ignore [\"words.json\", \"logDb.json\"] ./index.js"
+    "dev": "nodemon --ignore [\"words.json\", \"logDb.json\"] ./app.js"
   },
   "author": "cozykitten",
   "license": "Mozilla Public License 2.0",

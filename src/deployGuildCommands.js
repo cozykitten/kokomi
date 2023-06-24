@@ -4,10 +4,10 @@ require('dotenv').config();
 const fs = require('fs');
 
 const commands = [];
-const command_files = fs.readdirSync('./commands/').filter(file => /.js|.ts/.test(file));
+const command_files = fs.readdirSync('../commands/').filter(file => /.js|.ts/.test(file));
 
 for (const file of command_files) {
-	const command = require(`./commands/${file}`);
+	const command = require(`../commands/${file}`);
 	if (command.data && command.data.name) {
 		commands.push(command.data.toJSON());
 		console.log('loading ' + file);
