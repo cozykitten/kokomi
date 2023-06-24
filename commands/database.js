@@ -88,7 +88,7 @@ async function sendDatabase(interaction) {
 
     const server = await interaction.client.guilds.cache.get(process.env.KOKOMI_HOME);
 	const channel = await server.channels.cache.get(process.env.KOKOMI_DATABASE);
-    const file = await fs.promises.readFile('../data/words.json');
+    const file = await fs.promises.readFile('./data/words.json');
 
     await channel.send({ files: [{ attachment: file, name: 'words.json' }] });
     interaction.reply({ content: 'Database retrieved.', ephemeral: true });
