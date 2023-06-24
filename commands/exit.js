@@ -10,7 +10,7 @@ module.exports = {
 		.setDescription('Kokomi goes to sleep')
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
-	async execute(interaction, client) {
+	async execute(interaction) {
 
 		if (!JSON.parse(process.env.TRUSTED).includes(interaction.user.id)) return interaction.reply('This command is not available for public useage.');
 		await interaction.reply({ content: 'Good night! <:KeqingSleep:1038896867305603122>', ephemeral: true});
@@ -28,7 +28,7 @@ module.exports = {
 		// console.log('exiting..');
 		// lb.lastexit = true;
 		// await synclb(lb);
-		// await client.destroy();
+		// await interaction.client.destroy();
 		// process.exit();
 	}
 }

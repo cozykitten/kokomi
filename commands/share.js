@@ -14,7 +14,7 @@ module.exports = {
             .addStringOption(option => option.setName('message').setDescription('message to share').setMaxLength(2000).setRequired(true)))
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
-    async execute(interaction, client) {
+    async execute(interaction) {
 
         let users;
         if (interaction.options.getSubcommand() === 'feed') {
@@ -30,7 +30,7 @@ module.exports = {
         await interaction.reply({ content: "sending...", ephemeral: true });
 
         for (const uid of users) {
-            const user = await client.users.fetch(uid);
+            const user = await interaction.client.users.fetch(uid);
             try {
                 await user.send(interaction.options.getString('message').replace(/\s?\\n\s?/g, "\n"));
             } catch (e) {

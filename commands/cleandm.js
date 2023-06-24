@@ -23,7 +23,7 @@ async function deleteMessageAmount(dm, interaction) {
         }
     });
     await Promise.all(deletePromises);
-    interaction.editReply({ content: "deleted", ephemeral: true });
+    interaction.editReply({ content: `Deleted messages.`, ephemeral: true });
 }
 
 module.exports = {
@@ -33,13 +33,13 @@ module.exports = {
         .addIntegerOption(option => option.setName('amount').setDescription('amount of messages to delete').setMaxValue(100).setMinValue(1))
         .addStringOption(option => option.setName('id').setDescription('message id').setMaxLength(20)),
 
-    async execute(interaction, client) {
+    async execute(interaction) {
 
         if (interaction.inGuild()) return interaction.reply('This command is DM only.');
 
         if (interaction.options.getString('id')) {
             
-            const user = await client.users.fetch(interaction.user.id);
+            const user = await interaction.client.users.fetch(interaction.user.id);
             if (user.dmChannel) {
                 await deleteMessageId(user.dmChannel, interaction);
             }
@@ -52,7 +52,7 @@ module.exports = {
 
             if (interaction.options.getInteger('amount') < 51) {
 
-                const user = await client.users.fetch(interaction.user.id);
+                const user = await interaction.client.users.fetch(interaction.user.id);
                 if (user.dmChannel) {
                     await interaction.deferReply({ ephemeral: true });
                     await deleteMessageAmount(user.dmChannel, interaction);

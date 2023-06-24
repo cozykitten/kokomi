@@ -1,6 +1,6 @@
 const { lb, synclb } = require('../dbManager');
 
-module.exports = async (client, interaction) => {
+module.exports = async (interaction) => {
 
 	if (!interaction.isChatInputCommand()) return;
 
@@ -28,8 +28,8 @@ module.exports = async (client, interaction) => {
 	synclb(lb);
 
 	//execute command
-	const command = client.commands.get(interaction.commandName);
-	if (command) command.execute(interaction, client);
+	const command = interaction.client.commands.get(interaction.commandName);
+	if (command) command.execute(interaction);
 
 	console.log(`\nCommand: ${interaction.commandName} ${interaction.options._subcommand}`);
 	for (const iterator of interaction.options._hoistedOptions) {

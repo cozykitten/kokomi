@@ -84,9 +84,9 @@ async function getDatabase(interaction) {
     }
 }
 
-async function sendDatabase(interaction, client) {
+async function sendDatabase(interaction) {
 
-    const server = await client.guilds.cache.get(process.env.KOKOMI_HOME);
+    const server = await interaction.client.guilds.cache.get(process.env.KOKOMI_HOME);
 	const channel = await server.channels.cache.get(process.env.KOKOMI_DATABASE);
     const file = await fs.promises.readFile('./words.json');
 
@@ -106,7 +106,7 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .setDMPermission(false),
 
-    async execute(interaction, client) {
+    async execute(interaction) {
 
         //command may only be used by developer
         if (!JSON.parse(process.env.AUTHOR) === interaction.user.id) return interaction.reply('This command is not available for public useage.');
@@ -117,10 +117,10 @@ module.exports = {
 
             if (!interaction.options.getAttachment('file')) return interaction.reply({ content: 'Please attach the database file to update my database.', ephemeral: true });
             const reloadRequired = await getDatabase(interaction);
-            if (reloadRequired) reloadApplication(client);
+            if (reloadRequired) reloadApplication(interaction.client);
         }
         else {
-            await sendDatabase(interaction, client);
+            await sendDatabase(interaction);
         }
     }
 }

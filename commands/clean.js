@@ -51,7 +51,7 @@ async function deleteMessageAmount(interaction) {
         messages = await interaction.channel.messages.fetch({ limit: interaction.options.getInteger('amount'), cache: false });
     }
 
-    if (messages.size && messages.at(-1).createdTimestamp + 1209000 > Date.now()) {
+    if (messages.size && messages.at(-1).createdTimestamp + 1209000000 > Date.now()) {
         await interaction.channel.bulkDelete(messages, true);
         await interaction.reply({ content: `Deleted messages.`, ephemeral: true });
         return;
