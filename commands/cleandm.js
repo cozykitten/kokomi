@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 require('dotenv').config();
-
+//TODO: combine with clean.js, just check first if we're in a dmChannel or a guildChannel
 
 async function deleteMessageId(dm, interaction) {
     try {

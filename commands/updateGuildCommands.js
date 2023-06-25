@@ -159,8 +159,8 @@ module.exports = {
             //await registerAll(rest, interaction, []);
             const count = await registerAll(rest, interaction, commands)
 
-            if (count) interaction.editReply({ content: `Successfully registered application commands for ${count} guilds`, ephemeral: false });
-            else interaction.editReply({ content: `Failed registering application commands`, ephemeral: false });
+            if (count) interaction.editReply({ content: `Successfully registered application commands for ${count} guilds <:ZeroCool:1038896868987510794>`, ephemeral: false });
+            else interaction.editReply({ content: `Failed registering application commands <:ZeroFire:1038896872296808560>`, ephemeral: false });
         }
         else {
             let guildID;
