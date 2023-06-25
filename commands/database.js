@@ -4,22 +4,6 @@ const https = require('https');
 require('dotenv').config();
 
 
-async function reloadApplication(client) {
-    const { lb, synclb } = require('../src/dbManager');
-
-    console.log('reloading application due to database update..');
-	lb.lastexit = true;
-    try {
-        await synclb(lb);
-    } catch (error) {
-        const home = await client.guilds.fetch(process.env.KOKOMI_HOME);
-        const log = await home.channels.fetch(process.env.KOKOMI_LOG);
-        await log.send(`Error while syncing the database:\n${error.message}`);
-    }
-    await client.destroy();
-	process.exit();
-}
-
 async function getDatabase(interaction) {
 
     const attachment = await interaction.options.getAttachment('file');
@@ -71,7 +55,7 @@ async function getDatabase(interaction) {
                     file.on('finish', async () => {
                         file.close();
                         console.log('Database downloaded successfully');
-                        confirmation.editReply({ content: 'Database downloaded successfully.\nReloading application...', components: [], ephemeral: true });
+                        confirmation.editReply({ content: 'Database downloaded successfully.\nRestarting application...', components: [], ephemeral: true });
                         resolve(true);
                     });
                     file.on('error', () => {
@@ -122,8 +106,11 @@ module.exports = {
             return interaction.reply({ content: 'This feature is currently disabled. Please use SSH if possible.', ephemeral: true });
 
             if (!interaction.options.getAttachment('file')) return interaction.reply({ content: 'Please attach the database file to update my database.', ephemeral: true });
-            const reloadRequired = await getDatabase(interaction);
-            if (reloadRequired) reloadApplication(interaction.client);
+            const restartRequired = await getDatabase(interaction);
+            if (restartRequired) {
+                const { restartApplication } = require('../src/reloadManager');
+                restartApplication(interaction.client);
+            }
         }
         else {
             await sendDatabase(interaction);

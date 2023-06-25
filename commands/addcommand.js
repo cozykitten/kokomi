@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits, ButtonBuilder, ActionRowBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 require('dotenv').config();
+const { reloadApplication } = require('../src/reloadManager');
 const fs = require('fs');
 const https = require('https');
 
@@ -61,8 +62,9 @@ module.exports = {
                         file.on('finish', async () => {
                             file.close();
                             console.log('File downloaded successfully');
-                            confirmation.editReply({ content: 'File downloaded successfully', components: [], ephemeral: true });
+                            confirmation.editReply({ content: 'File downloaded successfully.\nReloading commands...', components: [], ephemeral: true });
                             postLog(attachment.name, interaction.user.id, true, channel);
+                            reloadApplication(interaction.client);
                         });
                     });
 
@@ -85,8 +87,9 @@ module.exports = {
                 file.on('finish', async () => {
                     file.close();
                     console.log('File downloaded successfully');
-                    interaction.editReply({ content: 'File downloaded successfully', ephemeral: true });
+                    interaction.editReply({ content: 'File downloaded successfully.\nReloading commands...', ephemeral: true });
                     postLog(attachment.name, interaction.user.id, false, channel);
+                    reloadApplication(interaction.client);
                 });
             });
         }
