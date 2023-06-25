@@ -9,8 +9,14 @@ async function reloadApplication(client) {
 
     console.log('reloading application due to database update..');
 	lb.lastexit = true;
-	await synclb(lb);
-	await client.destroy();
+    try {
+        await synclb(lb);
+    } catch (error) {
+        const home = await client.guilds.fetch(process.env.KOKOMI_HOME);
+        const log = await home.channels.fetch(process.env.KOKOMI_LOG);
+        await log.send(`Error while syncing the database:\n${error.message}`);
+    }
+    await client.destroy();
 	process.exit();
 }
 
@@ -24,7 +30,7 @@ async function getDatabase(interaction) {
         return false;
     }
 
-    const filePath = './' + attachment.name;
+    const filePath = './data/' + attachment.name;
     await interaction.deferReply({ ephemeral: true });
 
 
