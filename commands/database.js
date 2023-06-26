@@ -108,8 +108,8 @@ module.exports = {
             if (!interaction.options.getAttachment('file')) return interaction.reply({ content: 'Please attach the database file to update my database.', ephemeral: true });
             const restartRequired = await getDatabase(interaction);
             if (restartRequired) {
-                const { restartApplication } = require('../src/reloadManager');
-                restartApplication(interaction.client);
+                const { reloadApplication } = require('../src/reloadManager');
+                reloadApplication(interaction.client);
             }
         }
         else {

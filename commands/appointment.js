@@ -8,7 +8,21 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('appointment')
         .setDescription('view and set your appointments')
-        .addIntegerOption(option => option.setName('month').setDescription('month').setMaxValue(11).setMinValue(0).setRequired(true))
+        .addIntegerOption(option => option.setName('month').setDescription('month').setMaxValue(11).setMinValue(0).setRequired(true)
+        .addChoices(
+            { name: 'January', value: 0 },
+            { name: 'February', value: 1 },
+            { name: 'March', value: 2 },
+            { name: 'April', value: 3 },
+            { name: 'May', value: 4 },
+            { name: 'June', value: 5 },
+            { name: 'July', value: 6 },
+            { name: 'August', value: 7 },
+            { name: 'September', value: 8 },
+            { name: 'October', value: 9 },
+            { name: 'November', value: 10 },
+            { name: 'December', value: 11 }
+        ))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
     async execute(interaction) {
@@ -168,8 +182,7 @@ async function attachLastRow (firstWeekday, lastDayOfMonth, baseSvg, numberSvg, 
     }
 
     const circlesNeeded = fullDaysInMonth % 7;
-    //console.log('\nfirst Weekday: ' + firstWeekday + '\nlastDayOfMonth: ' + lastDayOfMonth + '\nfullDaysInMonth: ' + fullDaysInMonth + '\nrowsNeeded: ' + rowsNeeded + '\ncirclesNeeded: ' + circlesNeeded);
-
+    
     let xOffset = 0;
     for (let i = 0; i < circlesNeeded; i++) {
         xOffset = i * 25 + 10;
@@ -193,22 +206,27 @@ async function attachLastRow (firstWeekday, lastDayOfMonth, baseSvg, numberSvg, 
  * @returns {Promise<String>}
  */
 async function markDays (year, month, firstWeekday, userID) {
-    //TODO: same thing as above, add missing first row days to date the marking is on, / 7 and round up to get row and % 7 to get column
-    //read from reminders
-    //add new layer at the bottom of svg, for that modify above function to not "close" the svg and do that in parent function
 
     let markSvg = `<g fill="#b6c6e2"> //ccd1e9
     <g transform="translate(10, 65)">`
+    const addedDates = [];
 
     for (const key in db.reminder) {
         if (db.reminder[key].uid !== userID) {
             continue;
         }
-        const date = new Date(Number(key));
+        
+        const date = new Date(db.reminder[key].eventDate);
         if (!(date.getFullYear() === year && date.getMonth() === month)) {
             continue;
         }
+
         const circleNumber = ((firstWeekday + 6) % 7) + date.getDate();
+        if (addedDates.includes(circleNumber)) {
+            continue;
+        }
+        addedDates.push(circleNumber);
+
         const row = Math.ceil(circleNumber / 7);
         const column = circleNumber % 7;
         const yOffset = (row * 25) - 15;

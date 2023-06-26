@@ -8,8 +8,9 @@ module.exports = {
     data: new SlashCommandBuilder()
 		.setName('exit')
 		.setDescription('Kokomi goes to sleep')
-		.addIntegerOption(option => option.setName('reload').setDescription('reload commands').addChoices(
-			{ name: 'reload', value: 1 }
+		.addIntegerOption(option => option.setName('option').setDescription('reload commands or restart kokomi').addChoices(
+			{ name: 'reload', value: 1 },
+			{ name: 'restart', value: 2 }
 		))
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
@@ -17,9 +18,14 @@ module.exports = {
 
 		if (!JSON.parse(process.env.TRUSTED).includes(interaction.user.id)) return interaction.reply('This command is not available for public useage.');
 
-		if (interaction.options.getInteger('reload')) {
+		if (interaction.options.getInteger('option') === 1) {
 			await interaction.reply({ content: `I'll brb! <:AriSalute:1021920065802739752>`, ephemeral: true});
 			reloadApplication(interaction.client);
+			return;
+		}
+		else if (interaction.options.getInteger('option') === 2) {
+			await interaction.reply({ content: `I'll brb! <:AriSalute:1021920065802739752>`, ephemeral: true});
+			restartApplication(interaction.client);
 			return;
 		}
 

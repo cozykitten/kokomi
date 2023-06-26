@@ -32,7 +32,7 @@ exports.startup = startup;
 exports.reloadApplication = async (client) => {
     const fs = require('fs');
 
-    console.log('reloading commands and event listeners..');
+    console.log('reloading commands, event listeners and databases..');
 
 	// Clear the old command collection
 	client.commands.clear();
@@ -49,13 +49,14 @@ exports.reloadApplication = async (client) => {
 		client.removeAllListeners(eventName);
 	}
 
-    // Delete the modules corresponding to the event and command files from the require.cache object
+    // Delete the modules corresponding to the event and command files and dbManager from the require.cache object
 	for (const file of eventFiles) {
         delete require.cache[require.resolve(`../events/${file}`)];
     }
     for (const file of commandFiles) {
         delete require.cache[require.resolve(`../commands/${file}`)];
     }
+    delete require.cache[require.resolve(`./dbManager`)];
 
     // Load events and commands again
 	startup(eventFiles, commandFiles, client);

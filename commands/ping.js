@@ -29,6 +29,6 @@ module.exports = {
 				value: apiLatency,
 				inline: true
 			});
-		interaction.editReply({ embeds: [embed] });
+			interaction.editReply({ content: '', embeds: [embed] });
 	}
 }
