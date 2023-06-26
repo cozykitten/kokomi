@@ -35,7 +35,7 @@ async function githubTimed(client) {
         }
     }
     //repeat every 24h
-    setTimeout(githubTimed, 86400000);
+    setTimeout(githubTimed, 86400000, client);
 }
 
 async function checkLastExit(log) {
