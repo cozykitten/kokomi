@@ -23,11 +23,9 @@ module.exports = async (client) => {
     client.commands.get('reminder').loadReminders(client);
 
     //checking git
-    console.log('checking github..');
     githubTimed(client, log);
 
     //checking twitch
-    console.log('checking twitch..');
     const twitchCache = {};
     twitchTimed(client, twitchCache);
 }
@@ -41,6 +39,7 @@ module.exports = async (client) => {
  */
 async function githubTimed(client, channel) {
     //TODO: export in own command file that allows adding and removing of repos to check, similar to reminder command
+    console.log('checking github..');
     const isTokenValid = await checkGithubTokenExpiration();
 
     if (!isTokenValid) {
@@ -74,6 +73,7 @@ async function githubTimed(client, channel) {
  */
 async function twitchTimed(client, twitchCache) {
     //TODO: export in own command file that allows adding and removing of channels to check, similar to reminder command
+    console.log('checking twitch..');
     const clientId = process.env.TWITCH_ID;
     const clientSecret = process.env.TWITCH_SECRET;
     const accessToken = await getTwitchAccessToken(clientId, clientSecret);
