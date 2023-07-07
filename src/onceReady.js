@@ -23,8 +23,19 @@ module.exports = async (client) => {
 
     //checking git
     githubTimed(client);
+
+    //checking twitch
+    const twitchCache = {};
+    twitchTimed(client, twitchCache);
 }
 
+/**
+ * Calls the githubTimed function every 24h.
+ * Contains 2 nested loops, the first iterated through every discord user in db.github, the second iterates through the array of github repos assigned to each discord user.
+ * It then calls githubTimed for every repo.
+ * 
+ * @param {Discord.Client} client Discord Client.
+ */
 async function githubTimed(client) {
     //TODO: export in own command file that allows adding and removing of repos to check, similar to reminder command
     console.log('checking github..');
@@ -38,6 +49,43 @@ async function githubTimed(client) {
     setTimeout(githubTimed, 86400000, client);
 }
 
+/**
+ * Calls the twitch function every 20 minutes.
+ * Contains 2 nested loops, the first iterates through every discord user in db.twitch and the second iterates through all twitch channels listed for every discord user.
+ * It calls the twitch function on every listed twitch channel.
+ * It sends a message to the discord user if the twitch function returns true. 
+ * 
+ * @param {Discord.Client} client Discord Client.
+ * @param {Object.<string, number>} twitchCache Cache holding the stream id for each channel if it's live.
+ */
+async function twitchTimed(client, twitchCache) {
+    //TODO: export in own command file that allows adding and removing of channels to check, similar to reminder command
+    console.log('checking twitch..');
+    for (const uid in db.twitch) {
+
+        const discordUser = await client.users.fetch(uid);
+        for (const e of db.twitch[uid]) {
+
+            if (await twitch(e, twitchCache)) {
+                try {
+                    await discordUser.send({ content: `${e} is live on twitch now!`, ephemeral: true });
+                } catch (e) {
+                    console.error("Cannot send messages to " + discordUser.username);
+                    const server = await client.guilds.cache.get(process.env.KOKOMI_HOME); 
+                    const channel = await server.channels.cache.get(process.env.KOKOMI_LOG);
+                    channel.send("Cannot send messages to " + discordUser.username);
+                }
+            }
+        }
+    }
+    //repeat every 20min
+    setTimeout(twitchTimed, 1200000, client, twitchCache);
+}
+
+/**
+ * Retrieves the command data of the last invoked command and posts it in the log channel.
+ * @param {Discord.GuildChannel} log The channel to send kokomi's logs to.
+ */
 async function checkLastExit(log) {
 
     const{ EmbedBuilder } = require("discord.js");
@@ -81,7 +129,14 @@ async function checkLastExit(log) {
     log.send({ content: "last exit: unplanned", embeds: [embed] });
 }
 
-// Retrieve information on the latest release
+/**
+ * Retrieve information on the latest release of a given Github repo.
+ * If the latest release occured within the last 24h, send a message with the release information to the discordUser.
+ * 
+ * @param {String} owner The owner of the github repository to check.
+ * @param {String} repo The github repository to check.
+ * @param {Discord.User} discordUser 
+ */
 async function github(owner, repo, discordUser) {
     // Retrieve information on the latest release
     fetch(`https://api.github.com/repos/${owner}/${repo}/releases?per_page=1`)
@@ -100,7 +155,8 @@ async function github(owner, repo, discordUser) {
                     const channel = await server.channels.cache.get(process.env.KOKOMI_LOG);
                     channel.send("Cannot send messages to " + discordUser.username);
                 }
-            } else {
+            }
+            else {
                 return;
             }
         })
@@ -108,4 +164,65 @@ async function github(owner, repo, discordUser) {
             console.log(`Error retrieving release information: ${error}`);
             return;
         });
+}
+
+/**
+ * Checks if a given twitch channel is live.
+ * 
+ * @param {String} channelName Name of the twitch channel to check.
+ * @param {Object.<string, number>} twitchCache Cache holding the stream id for each channel if it's live.
+ * @returns {boolean} Returns true only once for each stream id.
+ */
+async function twitch(channelName, twitchCache) {
+
+    const clientId = process.env.TWITCH_ID;
+    const clientSecret = process.env.TWITCH_SECRET;
+    const accessToken = await getAccessToken(clientId, clientSecret);
+    const url = `https://api.twitch.tv/helix/streams?user_login=${channelName}`;
+
+    try {
+        const response = await fetch(url, {
+            headers: {
+                'Client-ID': clientId,
+                'Authorization': `Bearer ${accessToken}`
+              }
+        });
+        const data = await response.json();
+
+        if (data.data.length > 0) {
+            // Channel is live, cache stream id
+            const stream = data.data[0];
+
+            // If the same stream id is already set, that means this function already returned true before for this stream id
+            if (!(twitchCache[channelName] === stream.id)) {
+                twitchCache[channelName] = stream.id;
+                return true;
+            }
+            return false;
+        }
+        else {
+            // Channel is not live
+            twitchCache[channelName] = 0;
+            return false;
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        return false;
+    }
+
+    async function getAccessToken(clientId, clientSecret) {
+        const url = 'https://id.twitch.tv/oauth2/token';
+        const params = new URLSearchParams();
+        params.append('client_id', clientId);
+        params.append('client_secret', clientSecret);
+        params.append('grant_type', 'client_credentials');
+    
+        const response = await fetch(url, {
+            method: 'POST',
+            body: params
+        });
+    
+        const data = await response.json();
+        return data.access_token;
+    }
 }
