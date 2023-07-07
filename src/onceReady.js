@@ -68,7 +68,7 @@ async function twitchTimed(client, twitchCache) {
 
             if (await twitch(e, twitchCache)) {
                 try {
-                    await discordUser.send({ content: `${e} is live on twitch now!`, ephemeral: true });
+                    await discordUser.send({ content: `${e} is live now on https://www.twitch.tv/${e}` });
                 } catch (e) {
                     console.error("Cannot send messages to " + discordUser.username);
                     const server = await client.guilds.cache.get(process.env.KOKOMI_HOME); 
