@@ -83,19 +83,21 @@ async function twitchTimed(client, twitchCache) {
         const discordUser = await client.users.fetch(uid);
         for (const e of db.twitch[uid]) {
 
-            const stream = await twitch(e, twitchCache, clientId, accessToken);
-            if (stream) {
+            const thumbnail = await twitch(e, twitchCache, clientId, accessToken, discordUser);
+            if (thumbnail) {
                 try {
                     const embed = new EmbedBuilder()
                         .setTitle('Twitch')
                         .setColor(0x797FCB)
                         .setDescription(`${e} is now live on twitch!`)
                         .setURL(`https://www.twitch.tv/${e}`)
-                        .setImage(stream.replace('{width}x{height}', '1280x720'));
-                    await discordUser.send({ embeds: [embed] });
+                        .setImage(thumbnail.replace('{width}x{height}', '1280x720'));
+                    const message = await discordUser.send({ embeds: [embed] });
+                    twitchCache[e].messageId = message.id;
+
                 } catch (e) {
                     console.error("Cannot send messages to " + discordUser.username);
-                    const server = await client.guilds.cache.get(process.env.KOKOMI_HOME); 
+                    const server = await client.guilds.cache.get(process.env.KOKOMI_HOME);
                     const channel = await server.channels.cache.get(process.env.KOKOMI_LOG);
                     channel.send("Cannot send messages to " + discordUser.username);
                 }
@@ -203,7 +205,7 @@ async function github(owner, repo, discordUser) {
  * @param {String} accessToken Twitch access token.
  * @returns {String} Returns the thumbnail url only once for each stream id.
  */
-async function twitch(channelName, twitchCache, clientId, accessToken) {
+async function twitch(channelName, twitchCache, clientId, accessToken, discordUser) {
     const url = `https://api.twitch.tv/helix/streams?user_login=${channelName}`;
 
     try {
@@ -218,16 +220,35 @@ async function twitch(channelName, twitchCache, clientId, accessToken) {
         if (data.data.length > 0) {
             // Channel is live, cache stream id
             const stream = data.data[0];
+
+            if (!twitchCache[channelName]) {
+                twitchCache[channelName] = {};
+            }
+
             // If the same stream id is already set, that means this function already returned true before for this stream id
-            if (!(twitchCache[channelName] === stream.id)) {
-                twitchCache[channelName] = stream.id;
+            if (!(twitchCache[channelName].streamId === stream.id)) {
+                twitchCache[channelName].streamId = stream.id;
                 return stream.thumbnail_url;
             }
             return false;
         }
         else {
             // Channel is not live
-            twitchCache[channelName] = 0;
+            if (!twitchCache[channelName]) return false;
+            twitchCache[channelName].streamId = 0;
+
+            if (!twitchCache[channelName].hasOwnProperty('messageId')) return false;
+
+            if (discordUser.dmChannel) {
+                const m = await discordUser.dmChannel.messages.fetch(twitchCache[channelName].messageId);
+                await m.delete();
+            }
+            else {
+                const dm = await user.createDM();
+                const m = await dm.messages.fetch(twitchCache[channelName].messageId);
+                await m.delete();
+            }
+            delete twitchCache[channelName].messageId;
             return false;
         }
     }
