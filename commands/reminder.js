@@ -3,9 +3,6 @@ const { db, sync } = require('../src/dbManager');
 const ms = require('ms');
 require('dotenv').config();
 
-/*
-TODO: switch to using npm croner
-*/
 
 async function remindme(timestamp, client) {
 
@@ -15,14 +12,15 @@ async function remindme(timestamp, client) {
         .setDescription('<:AriNotes:1038919832135024640> | ' + db.reminder[timestamp].event)
         .setColor(0x797FCB);
 
-    const user = await client.users.fetch(db.reminder[timestamp].uid);
     try {
+        const user = await client.users.fetch(db.reminder[timestamp].uid);
         await user.send({ embeds: [embed] });
     } catch (e) {
         console.error("Cannot send messages to " + user.username);
-        const server = await client.guilds.cache.get(process.env.KOKOMI_HOME);
-		const channel = await server.channels.cache.get(process.env.KOKOMI_LOG);
-        channel.send("Cannot send messages to " + user.username);
+        await sendErrorLog();
+        //since impossible to remind the receiver, try again in 1h and don't delete reminder
+        setReminder(360000, timestamp, client);
+        return;
     }
 
     //remove db entry as reminder is completed
@@ -41,6 +39,17 @@ async function remindme(timestamp, client) {
             sync(db);
         }
     }
+
+    async function sendErrorLog() {
+        try {
+            const server = await client.guilds.cache.get(process.env.KOKOMI_HOME);
+            const channel = await server.channels.cache.get(process.env.KOKOMI_LOG);
+            channel.send("Cannot send messages to " + user.username);
+        } catch (error) {
+            console.error('Error sending error log to home server\n' + error);
+            return;
+        }
+    }
 }
 
 async function repeatTimeout(remindDate, client) {
@@ -57,6 +66,12 @@ async function repeatTimeout(remindDate, client) {
     sync(db);
 }
 
+/**
+ * 
+ * @param {number} remindTime time until callback function is executed.
+ * @param {number} remindDate key of the reminder object, also representing the timestamp of the remind Date.
+ * @param {Discord.Client} client Discord Client.
+ */
 function setReminder(remindTime, remindDate, client) {
     if (remindTime > 2147483646) {
         const timeout = setTimeout(repeatTimeout, 2147400000, remindDate, client);

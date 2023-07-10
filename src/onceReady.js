@@ -43,12 +43,18 @@ async function githubTimed(client, channel) {
     const isTokenValid = await checkGithubTokenExpiration();
 
     if (!isTokenValid) {
+        setTimeout(githubTimed, 900000, client);
+        return;
+    }
+
+    if (isTokenValid === -1) {
         console.log('GitHub token is expired or invalid. Please generate a new token.');
         const embed = new EmbedBuilder()
             .setTitle('Invalid token')
             .setColor(0xc43838)
             .setDescription('GitHub token is expired or invalid. Please generate a new token.');
         channel.send({ embeds: [embed] });
+        setTimeout(githubTimed, 900000, client);
         return;
     }
 
@@ -77,6 +83,12 @@ async function twitchTimed(client, twitchCache) {
     const clientId = process.env.TWITCH_ID;
     const clientSecret = process.env.TWITCH_SECRET;
     const accessToken = await getTwitchAccessToken(clientId, clientSecret);
+
+    if (!accessToken) {
+        //connection error, try again in 10 minutes
+        setTimeout(twitchTimed, 600000, client, twitchCache);
+        return;
+    }
 
     for (const uid in db.twitch) {
 
@@ -267,14 +279,14 @@ async function checkGithubTokenExpiration() {
         });
 
         if (response.status === 401) {
-            return false; // Token is expired or invalid
+            return -1; // Token is expired or invalid
         }
 
-        return true; // Token is valid
+        return 1; // Token is valid
     }
     catch (error) {
-        console.log(`Error checking token expiration: ${error}`);
-        return false; // Error occurred, assume token is expired or invalid
+        console.error(`Error checking Github token expiration: ${error}`);
+        return false; // Error occurred, or connection error
     }
 }
 
@@ -285,11 +297,16 @@ async function getTwitchAccessToken(clientId, clientSecret) {
     params.append('client_secret', clientSecret);
     params.append('grant_type', 'client_credentials');
 
-    const response = await fetch(url, {
-        method: 'POST',
-        body: params
-    });
-
-    const data = await response.json();
-    return data.access_token;
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: params
+        });
+    
+        const data = await response.json();
+        return data.access_token;
+    } catch (error) {
+        console.error('Error: failed to fetch Twitch access token\n' + error);
+        return false;
+    }
 }
