@@ -251,15 +251,17 @@ async function twitch(channelName, twitchCache, clientId, accessToken, discordUs
 
             if (!twitchCache[channelName].hasOwnProperty('messageId')) return false;
 
+            let dm;
             if (discordUser.dmChannel) {
-                const m = await discordUser.dmChannel.messages.fetch(twitchCache[channelName].messageId);
-                await m.delete();
+                dm = discordUser.dmChannel;
+            } else {
+                dm = await user.createDM();
             }
-            else {
-                const dm = await user.createDM();
+
+            try {
                 const m = await dm.messages.fetch(twitchCache[channelName].messageId);
                 await m.delete();
-            }
+            } catch (e) {}
             delete twitchCache[channelName].messageId;
             return false;
         }
