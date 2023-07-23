@@ -207,8 +207,7 @@ async function attachLastRow (firstWeekday, lastDayOfMonth, baseSvg, numberSvg, 
  */
 async function markDays (year, month, firstWeekday, userID) {
 
-    let markSvg = `<g fill="#b6c6e2"> //ccd1e9
-    <g transform="translate(10, 65)">`
+    let markSvg = `<g transform="translate(10, 65)">` //ccd1e9 b6e2c9 c2e2b6
     const addedDates = [];
 
     for (const key in db.reminder) {
@@ -231,10 +230,12 @@ async function markDays (year, month, firstWeekday, userID) {
         const column = circleNumber % 7;
         const yOffset = (row * 25) - 15;
         const xOffset = (((column + 175 + 1) * 25) - 40) % 175;
-        markSvg = markSvg + '\n' + `<circle r="10" cx="${xOffset}" cy="${yOffset}" />`;
+        let color = "#b6c6e2";
+        if (db.reminder[key].repeat) color = "#c2e2b6";
+        markSvg = markSvg + '\n' + `<circle fill="${color}" r="10" cx="${xOffset}" cy="${yOffset}" />`;
     }
 
-    return markSvg + '\n' + `</g>\n</g>`;
+    return markSvg + '\n' + `</g>`;
     
 
     /*

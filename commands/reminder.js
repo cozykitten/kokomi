@@ -89,6 +89,10 @@ function getDate(timestamp) {
     return formDate;
 }
 
+function compareNumbers(a, b) {
+    return a - b;
+}
+
 module.exports = {
     data: new SlashCommandBuilder()
 		.setName('reminder')
@@ -182,13 +186,20 @@ module.exports = {
                 return interaction.reply({ content: 'You didn\'t set any reminders' })
             }
 
+            let dateList = [];
             const reminderList = [];
-
+            const dateEventMatch = {};
+            
             for (const key in db.reminder) {
-                if (db.reminder[key].uid === interaction.user.id) {
-                    const date = new Date(db.reminder[key].eventDate);
-                    reminderList.push(date.getDate() + '.' + (date.getMonth() + 1) + '.' + ' | ' + db.reminder[key].event);
-                }
+                if (db.reminder[key].uid !== interaction.user.id) continue;
+                dateList.push(db.reminder[key].eventDate);
+                dateEventMatch[db.reminder[key].eventDate] = db.reminder[key].event;
+            }
+
+            dateList.sort(compareNumbers);
+            for (eventDate of dateList) {
+                const date = new Date(eventDate);
+                reminderList.push(date.getDate() + '.' + (date.getMonth() + 1) + '.' + ' | ' + dateEventMatch[eventDate]);
             }
 
             if (reminderList.length <= 0) {
