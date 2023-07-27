@@ -48,7 +48,7 @@ async function githubTimed(client, channel) {
     }
 
     if (isTokenValid === -1) {
-        console.log('GitHub token is expired or invalid. Please generate a new token.');
+        console.warn('GitHub token is expired or invalid. Please generate a new token.');
         const embed = new EmbedBuilder()
             .setTitle('Invalid token')
             .setColor(0xc43838)
@@ -203,7 +203,7 @@ async function github(owner, repo, discordUser) {
             return;
         }
     } catch (error) {
-        console.log(`Error retrieving release information: ${error}`);
+        console.error(`Error retrieving release information: ${error}`);
         return;
     };
 }
@@ -237,9 +237,9 @@ async function twitch(channelName, twitchCache, clientId, accessToken, discordUs
                 twitchCache[channelName] = {};
             }
 
-            // If the same stream id is already set, that means this function already returned true before for this stream id
-            if (!(twitchCache[channelName].streamId === stream.id)) {
-                twitchCache[channelName].streamId = stream.id;
+            // If live is 1, that means this function already returned true before for this stream
+            if (!twitchCache[channelName].live) {
+                twitchCache[channelName].live = 1;
                 return stream.thumbnail_url;
             }
             return false;
@@ -247,9 +247,8 @@ async function twitch(channelName, twitchCache, clientId, accessToken, discordUs
         else {
             // Channel is not live
             if (!twitchCache[channelName]) return false;
-            twitchCache[channelName].streamId = 0;
-
-            if (!twitchCache[channelName].hasOwnProperty('messageId')) return false;
+            if (!twitchCache[channelName].live) return false;
+            twitchCache[channelName].live = 0;
 
             let dm;
             if (discordUser.dmChannel) {
