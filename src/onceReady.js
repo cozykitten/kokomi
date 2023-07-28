@@ -103,7 +103,7 @@ async function twitchTimed(client, twitchCache) {
                         .setColor(0x797FCB)
                         .setDescription(`${e} is now live on twitch!`)
                         .setURL(`https://www.twitch.tv/${e}`)
-                        .setImage(thumbnail.replace('{width}x{height}', '1280x720'));
+                        .setImage(thumbnail.replace('{width}x{height}', '1280x720') + '?time=' + Date.now());
                     const message = await discordUser.send({ embeds: [embed] });
                     twitchCache[e].messageId = message.id;
 
