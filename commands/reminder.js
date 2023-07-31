@@ -16,8 +16,8 @@ async function remindme(timestamp, client) {
         const user = await client.users.fetch(db.reminder[timestamp].uid);
         await user.send({ embeds: [embed] });
     } catch (e) {
-        console.error("Cannot send messages to " + user.username);
-        await sendErrorLog();
+        console.error("Cannot send messages to user\nError in function 'remindme' of 'reminder.js'");
+        await sendErrorLog(db.reminder[timestamp].uid);
         //since impossible to remind the receiver, try again in 1h and don't delete reminder
         setReminder(360000, timestamp, client);
         return;
@@ -40,13 +40,14 @@ async function remindme(timestamp, client) {
         }
     }
 
-    async function sendErrorLog() {
+    async function sendErrorLog(uid) {
         try {
             const server = await client.guilds.cache.get(process.env.KOKOMI_HOME);
             const channel = await server.channels.cache.get(process.env.KOKOMI_LOG);
-            channel.send("Cannot send messages to " + user.username);
+            const user = await client.users.fetch(uid);
+            await channel.send("Cannot send messages to " + user.username + "\n error in function 'sendErrorLog' in 'reminder.js'");
         } catch (error) {
-            console.error('Error sending error log to home server\n' + error);
+            console.error('Error sending error log to home server {\n    ' + error + '\n}');
             return;
         }
     }

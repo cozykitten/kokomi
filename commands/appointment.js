@@ -81,7 +81,6 @@ async function constructView (month, userID) {
     //add reminder dates
     const finalSvg = lastRow[0] + '\n' + await markDays(year, month, firstWeekday, userID) + '\n' + lastRow[1] + '\n</svg>';
 
-    //console.log(finalSvg);
     return finalSvg;
 }
 

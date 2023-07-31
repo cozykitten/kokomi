@@ -108,10 +108,10 @@ async function twitchTimed(client, twitchCache) {
                     twitchCache[e].messageId = message.id;
 
                 } catch (e) {
-                    console.error("Cannot send messages to " + discordUser.username);
+                    console.error("Cannot send messages to " + discordUser.username + "\n error in function 'twitchTimed' in 'onceReady.js'");
                     const server = await client.guilds.cache.get(process.env.KOKOMI_HOME);
                     const channel = await server.channels.cache.get(process.env.KOKOMI_LOG);
-                    channel.send("Cannot send messages to " + discordUser.username);
+                    channel.send("Cannot send messages to " + discordUser.username + "\n error in function 'twitchTimed' in 'onceReady.js'");
                 }
             }
         }
@@ -194,10 +194,10 @@ async function github(owner, repo, discordUser) {
             try {
                 await discordUser.send(`New release available: ${latestRelease[0].name}\nhttps://github.com/${owner}/${repo}/releases`);
             } catch (e) {
-                console.error("Cannot send messages to " + discordUser.username);
+                console.error("Cannot send messages to " + discordUser.username + "\n error in function 'github' in 'onceReady.js'");
                 const server = await client.guilds.cache.get(process.env.KOKOMI_HOME);
                 const channel = await server.channels.cache.get(process.env.KOKOMI_LOG);
-                channel.send("Cannot send messages to " + discordUser.username);
+                channel.send("Cannot send messages to " + discordUser.username + "\n error in function 'github' in 'onceReady.js'");
             }
         } else {
             return;
@@ -265,8 +265,8 @@ async function twitch(channelName, twitchCache, clientId, accessToken, discordUs
             return false;
         }
     }
-    catch (error) {
-        console.error('Error:', error);
+    catch (err) {
+        console.error(err);
         return false;
     }
 }
@@ -307,7 +307,7 @@ async function getTwitchAccessToken(clientId, clientSecret) {
         const data = await response.json();
         return data.access_token;
     } catch (error) {
-        console.error('Error: failed to fetch Twitch access token\n' + error);
+        console.error(`Error fetching Twitch access token: ${error}`);
         return false;
     }
 }
