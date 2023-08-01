@@ -7,7 +7,6 @@ creds.json
 .vscode/
 kokomi.code-workspace
 package-lock.json
-package.json
 ecosystem.config.js
 
 # Logs
