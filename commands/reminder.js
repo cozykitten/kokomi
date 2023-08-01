@@ -29,11 +29,12 @@ async function remindme(timestamp, client) {
         const exists = await timestamp in db.reminder;
         if (exists) {
             if (db.reminder[timestamp].repeat) {
-                const remindDate = timestamp + db.reminder[timestamp].repeat;
-                const eventDate = db.reminder[timestamp].eventDate + db.reminder[timestamp].repeat;
+                const repeat = repeatMs(db.reminder[timestamp].repeat);
+                const remindDate = timestamp + repeat;
+                const eventDate = db.reminder[timestamp].eventDate + repeat;
                 db.reminder[remindDate] = db.reminder[timestamp];
                 db.reminder[remindDate].eventDate = eventDate;
-                setReminder(db.reminder[timestamp].repeat, remindDate, client);
+                setReminder(repeat, remindDate, client);
             }
             delete db.reminder[timestamp];
             sync(db);
@@ -53,6 +54,12 @@ async function remindme(timestamp, client) {
     }
 }
 
+/**
+ * Sets another timeout for the given date, using the setReminder function.
+ * 
+ * @param {number} remindDate key of the reminder object, also representing the timestamp of the remind Date.
+ * @param {Discord.Client} client Discord Client. 
+ */
 async function repeatTimeout(remindDate, client) {
 
     const date = Date.now();
@@ -68,6 +75,8 @@ async function repeatTimeout(remindDate, client) {
 }
 
 /**
+ * Sets a timeout to trigger the remindme function.
+ * Also takes care of the case that the timeout in ms might be bigger than the 32 bit int limit of setTimeout.
  * 
  * @param {number} remindTime time until callback function is executed.
  * @param {number} remindDate key of the reminder object, also representing the timestamp of the remind Date.
@@ -82,6 +91,21 @@ function setReminder(remindTime, remindDate, client) {
         const timeout = setTimeout(remindme, remindTime, remindDate, client);
         db.reminder[remindDate].timeoutID = timeout[Symbol.toPrimitive]();
     }
+}
+
+/**
+ * Calculates the amount of ms from the given repeat interval.
+ * 
+ * @param {number} repeat Number indicating the repeat interval, may be in ms or 1 to indicate 1 month.
+ * @returns Number indicating the repeat interval in ms.
+ */
+function repeatMs(repeat) {
+    if (!repeat) return false;
+    if (repeat === 1) {
+        const now = new Date();
+        return 86400000 * new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    }
+    return repeat;
 }
 
 function getDate(timestamp) {
@@ -160,21 +184,12 @@ module.exports = {
             }
 
             if (interaction.options.getInteger('repeat')) {
-                const repeat = Number(interaction.options.getInteger('repeat'));
-                if (repeat === 1) {
-                    const now = new Date();
-                    const repeat = 86400000 * new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
-                    if (offset >= repeat) {
-                        return interaction.reply({ content: 'offset time cam\'t be larger than repeat interval' });
-                    }
-                    db.reminder[remindDate].repeat = repeat;
+
+                const repeat = repeatMs(Number(interaction.options.getInteger('repeat')));
+                if (offset >= repeat) {
+                    return interaction.reply({ content: 'offset time cam\'t be larger than repeat interval' });
                 }
-                else {
-                    if (offset >= repeat) {
-                        return interaction.reply({ content: 'offset time cam\'t be larger than repeat interval' });
-                    }
-                    db.reminder[remindDate].repeat = repeat;
-                }
+                db.reminder[remindDate].repeat = repeat;
             }
 
             setReminder(remindTime, remindDate, interaction.client);
