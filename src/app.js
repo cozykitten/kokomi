@@ -33,7 +33,15 @@ startup(eventFiles, commandFiles, client);
 
 
 //login
-client.login(process.env.CLIENT_TOKEN)
+async function login() {
+    try {
+        await client.login(process.env.CLIENT_TOKEN);
+    } catch (err) {
+        console.error('client login error... retrying in 15 minutes.');
+        setTimeout(login, 900000);
+    }
+}
+login();
 
 
 //planned exit
