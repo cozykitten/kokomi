@@ -47,8 +47,8 @@ async function remindme(timestamp, client) {
             const channel = await server.channels.cache.get(process.env.KOKOMI_LOG);
             const user = await client.users.fetch(uid);
             await channel.send("Cannot send messages to " + user.username + "\n error in function 'sendErrorLog' in 'reminder.js'");
-        } catch (error) {
-            console.error('Error sending error log to home server {\n    ' + error + '\n}');
+        } catch (e) {
+            console.error('Error sending error log to home server', e);
             return;
         }
     }

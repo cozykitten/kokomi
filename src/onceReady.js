@@ -202,8 +202,8 @@ async function github(owner, repo, discordUser) {
         } else {
             return;
         }
-    } catch (error) {
-        console.error(`Error retrieving release information: ${error}`);
+    } catch (e) {
+        console.error('Error retrieving release information:', e);
         return;
     };
 }
@@ -265,8 +265,8 @@ async function twitch(channelName, twitchCache, clientId, accessToken, discordUs
             return false;
         }
     }
-    catch (err) {
-        console.error(`Error fetching twitch channel of ${channelName}: ` + err);
+    catch (e) {
+        console.error(`Error fetching twitch channel of ${channelName}:`, e);
         return false;
     }
 }
@@ -285,8 +285,8 @@ async function checkGithubTokenExpiration() {
 
         return 1; // Token is valid
     }
-    catch (error) {
-        console.error(`Error checking Github token expiration: ${error}`);
+    catch (e) {
+        console.error('Error checking Github token expiration:', e);
         return false; // Error occurred, or connection error
     }
 }
@@ -306,8 +306,8 @@ async function getTwitchAccessToken(clientId, clientSecret) {
     
         const data = await response.json();
         return data.access_token;
-    } catch (error) {
-        console.error(`Error fetching Twitch access token: ${error}`);
+    } catch (e) {
+        console.error('Error fetching Twitch access token:', e);
         return false;
     }
 }
