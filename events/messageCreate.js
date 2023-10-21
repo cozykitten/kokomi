@@ -37,8 +37,20 @@ async function sendModLog(msg, reason) {
 
 module.exports = async (message) => {
     if (!message.inGuild()) return;
-    const urls = message.content.match(urlRegex);
-    if (!urls) return;
+    const allUrls = message.content.match(urlRegex);
+    if (!allUrls) return;
+
+    const commonDomains = ['youtube.com', 'youtu.be', 'twitch.tv', 'tenor.com', 'discord.com', 'twitter.com', 'instagram.com', 'myanimelist.net', 'mangadex.org', 'phixiv.net', 'github.com'];
+
+    const filteredUrls = allUrls.filter(u => {
+        try {
+            const url = new URL(u);
+            return !commonDomains.some(commonDomain => url.hostname === commonDomain || url.hostname.endsWith('.' + commonDomain));
+        } catch (e) {
+            console.error(`Invalid URL: ${u}`, e);
+            return false;
+        }
+    })
 
     const requestBody = {
         client: {
@@ -49,7 +61,7 @@ module.exports = async (message) => {
             threatTypes: ['MALWARE', 'SOCIAL_ENGINEERING', 'UNWANTED_SOFTWARE', 'POTENTIALLY_HARMFUL_APPLICATION', 'THREAT_TYPE_UNSPECIFIED'],
             platformTypes: ['ANY_PLATFORM'],
             threatEntryTypes: ['URL'],
-            threatEntries: urls.map(u => ({ url: u }))
+            threatEntries: filteredUrls.map(u => ({ url: u }))
         }
     }
 
@@ -66,8 +78,8 @@ module.exports = async (message) => {
             if (message.member.moderatable) message.member.timeout(600000, 'Flagged bad link');
             sendModLog(message, data.matches[0].threatType);
         }
-    } catch (error) {
-        console.error(`Error checking URL with Google Safe Browsing API: ` + error);
+    } catch (e) {
+        console.error(`Error checking URL with Google Safe Browsing API`, e);
         return;
     }
 }
