@@ -12,7 +12,8 @@ module.exports = {
         .addSubcommand(subcommand => subcommand.setName('feed').setDescription('share a message with anyone following your topic')
             .addStringOption(option => option.setName('topic').setDescription('select a topic').setMaxLength(64).setRequired(true))
             .addStringOption(option => option.setName('message').setDescription('message to share').setMaxLength(2000).setRequired(true)))
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .setDMPermission(false),
 
     async execute(interaction) {
 

@@ -132,8 +132,8 @@ module.exports = {
          * @global {string[]} commands registered globally with global setting
          * @command_files {string[]} all commands found in ./commands
          */
-        const restricted = ['clone', 'music', 'follow'];
-        const global = ['cleandm', 'appointment', 'ping', 'reminder', 'timestamp', 'login', 'weather'];
+        const restricted = ['clone'];
+        const global = ['clean', 'setup', 'appointment', 'ping', 'reminder', 'timestamp', 'login', 'weather'];
         const command_files = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
 
 

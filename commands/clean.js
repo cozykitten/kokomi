@@ -57,40 +57,66 @@ async function deleteMessageAmount(interaction) {
         return;
     }
 
-    let count = 0;
     await interaction.reply({ content: `Deleting...`, ephemeral: true });
-    for (const [id, msg] of messages) {
+    const deletePromises = messages.map(async (msg) => {
         if (msg.deletable) {
             await msg.delete();
-            count++;
         }
-    }
-    await interaction.editReply({ content: `Deleted ${count} messages.`, ephemeral: true });
+    });
+    await Promise.all(deletePromises);
+    interaction.editReply({ content: `Deleted messages.`, ephemeral: true });
+}
+
+/**
+ * Deletes multiple messages from a DM channel.
+ * Messages in DM channels cannot be bulk deleted.
+ * 
+ * @param {ChatInputCommandInteraction} interaction The interaction triggering the command.
+ * @returns {Promise<void>}
+ */
+async function deleteMessageAmountDM(interaction) {
+    await interaction.deferReply({ ephemeral: true });
+    let messages = await interaction.channel.messages.fetch({ limit: 100, cache: false });
+    const id = process.env.CLIENT_ID;
+    
+    messages = messages.filter(function (m) {
+        if (this.count < interaction.options.getInteger('amount') && m.author.id === id) {
+            this.count++;
+            return true;
+        }
+        return false;
+    }, { count: 0 });
+    
+    await interaction.editReply({ content: `Deleting...`, ephemeral: true });
+    const deletePromises = messages.map(async (msg) => {
+        await msg.delete();
+    });
+    await Promise.all(deletePromises);
+    interaction.editReply({ content: `Deleted messages.`, ephemeral: true });
 }
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('clean')
-        .setDescription('clean messages from guild text channels')
+        .setDescription('clean messages from text channels')
         .addIntegerOption(option => option.setName('amount').setDescription('amount of messages to delete').setMaxValue(100).setMinValue(1))
         .addStringOption(option => option.setName('id').setDescription('message id').setMaxLength(20))
         .addUserOption(option => option.setName('user').setDescription('user mentionable'))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
-        .setDMPermission(false),
+        .setDMPermission(true),
 
     async execute(interaction) {
 
         if (interaction.options.getString('id')) {
-
             await deleteMessageId(interaction);
         }
         else if (interaction.options.getInteger('amount')) {
-
-            if (interaction.options.getInteger('amount') < 101) {
-
-                await deleteMessageAmount(interaction);
+            if (interaction.inGuild()) {
+                await deleteMessageAmount(interaction);     
             }
-            else return interaction.reply(`You can at most delete 100 messages at once.`);      
+            else {
+                await deleteMessageAmountDM(interaction);
+            }
         }
         else return interaction.reply('Specify message ID or amount');
     }

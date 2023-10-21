@@ -266,7 +266,7 @@ async function twitch(channelName, twitchCache, clientId, accessToken, discordUs
         }
     }
     catch (err) {
-        console.error(err);
+        console.error(`Error fetching twitch channel of ${channelName}: ` + err);
         return false;
     }
 }
