@@ -28,6 +28,9 @@ module.exports = async (client) => {
     //checking twitch
     const twitchCache = {};
     twitchTimed(client, twitchCache);
+
+    //check youtube
+    //youtubeTimed(client);
 }
 
 /**
@@ -118,6 +121,87 @@ async function twitchTimed(client, twitchCache) {
     }
     //repeat every 20min
     setTimeout(twitchTimed, 1200000, client, twitchCache);
+}
+
+/**
+ * TODO: set repeat to ~48min
+ * @param {Discord.Client} client Discord Client.
+ */
+async function youtubeTimed(client) {
+    
+    console.log('checking youtube..');
+    /* for (const uid in db.youtube) {
+
+        const discordUser = await client.users.fetch(uid);
+        for (const e of db.youtube[uid]) {
+
+            if (!await youtube(e)) {
+                //channel not live, continue
+                continue;
+            }
+            try {
+                const embed = new EmbedBuilder()
+                    .setTitle('Youtube')
+                    .setColor(0x797FCB)
+                    .setDescription(`${e} is now live on youtube!`)
+                    .setURL(`https://www.youtube.com/${e}/streams`);
+                await discordUser.send({ embeds: [embed] });
+            } catch (e) {
+                console.error("Cannot send messages to " + discordUser.username + "\n error in function 'twitchTimed' in 'onceReady.js'");
+                const server = await client.guilds.cache.get(process.env.KOKOMI_HOME);
+                const channel = await server.channels.cache.get(process.env.KOKOMI_LOG);
+                channel.send("Cannot send messages to " + discordUser.username + "\n error in function 'twitchTimed' in 'onceReady.js'");
+            }
+        }
+    }
+    //repeat every 48 min min
+    setTimeout(youtubeTimed, 2880000, client);
+
+    async function youtube(channelId) {
+        try {
+            const response = await fetch(`https://www.youtube.com/${channelId}/streams`);
+            const data = await response.text();
+            if (data.includes('hqdefault_live.jpg')) {
+                console.log('channel is live')
+                return true;
+            }
+            else {
+                console.log('channel is not live')
+                return false;
+            }
+        } catch (e) {
+            console.error(`Error fetching youtube channel of ${channelId}:`, e);
+            return false;
+        }
+    } */
+
+    {
+        async function getChannelId(channelName) {
+            const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=id&q=${channelName}&type=channel&key=${process.env.GOOGLE_API_KEY}`);
+            const data = await response.json();
+            console.log(data.items);
+            if (data.items.length > 0) {
+                return data.items[0].id.channelId;
+            } else {
+                throw new Error('Channel not found');
+            }
+        }
+        async function isChannelLive(channelId) {
+            const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&eventType=live&type=video&key=${process.env.GOOGLE_API_KEY}`);
+            const data = await response.json();
+            console.log(data)
+            return data.items.length > 0;
+        }
+
+        //const channelName = '';
+        //const isLive = await isChannelLive(await getChannelId(channelName));
+        //just use channelID directly
+        const channelId = '';
+        const isLive = await isChannelLive(channelId);
+
+        console.log(`Is the channel live? ${isLive}`);
+    }
+       
 }
 
 /**
