@@ -8,6 +8,7 @@ creds.json
 kokomi.code-workspace
 package-lock.json
 ecosystem.config.js
+*.traineddata
 
 # Logs
 logs

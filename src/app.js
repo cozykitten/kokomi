@@ -47,6 +47,7 @@ login();
 //planned exit
 process.on('SIGINT', async () => {
     console.log('exit command received..');
+    await client.commands.get('receipt').terminateWorker();
     pm2.disconnect();
     lb.lastexit = true;
     try {
@@ -58,5 +59,9 @@ process.on('SIGINT', async () => {
     }
     await client.destroy();
     process.exit();
-}
-);
+});
+
+//any exit
+process.on('exit', async () => {
+    await client.commands.get('receipt').terminateWorker();
+});

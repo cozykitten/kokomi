@@ -1,7 +1,8 @@
 const fs = require('fs');
 
 function readDatabase(file) {
-    return JSON.parse(fs.readFileSync(`./data/${file}`));
+    const data = fs.readFileSync(`./data/${file}`);
+    return JSON.parse(data);
 }
 
 exports.sync = (db) => new Promise(async (resolve, reject) => {
@@ -50,7 +51,17 @@ exports.synccd = (cd) => new Promise(async (resolve, reject) => {
         reject(err);   
     }
 });
-    
+
+exports.syncre = (re) => new Promise(async (resolve, reject) => {
+    try {
+        await fs.promises.writeFile("./data/receipts.json", JSON.stringify(re, null, 2));
+        resolve();
+    } catch (err) {
+        reject(err);   
+    }
+});
+
 exports.db = readDatabase('words.json');
 exports.lb = readDatabase('logDb.json');
 exports.cd = readDatabase('creds.json');
+exports.re = readDatabase('receipts.json');
