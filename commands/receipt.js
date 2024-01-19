@@ -268,7 +268,7 @@ module.exports = {
             await interaction.deferReply({ ephemeral: true });
 
             const currentDate = new Date(Date.now());
-            const currentYear = currentDate.getFullYear();
+            let currentYear = currentDate.getFullYear();
             const workingMonth = interaction.options.getInteger('month');
 
             if (!re[currentYear]) {
