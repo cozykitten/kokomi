@@ -16,7 +16,7 @@ module.exports = {
 
 	async execute(interaction) {
 
-		if (!JSON.parse(process.env.TRUSTED).includes(interaction.user.id)) return interaction.reply('This command is not available for public useage.');
+		if (!JSON.parse(process.env.TRUSTED).includes(interaction.user.id)) return interaction.reply('This command is not available for public usage.');
 
 		if (interaction.options.getInteger('option') === 1) {
 			await interaction.reply({ content: `I'll brb! <:AriSalute:1021920065802739752>`, ephemeral: true});

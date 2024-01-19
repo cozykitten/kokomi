@@ -123,12 +123,12 @@ module.exports = {
 	async execute(interaction){
 
         //command may only be used by developer
-        if (!JSON.parse(process.env.AUTHOR) === interaction.user.id) return interaction.reply('This command is not available for public useage.');
+        if (!JSON.parse(process.env.AUTHOR) === interaction.user.id) return interaction.reply('This command is not available for public usage.');
 
         const rest = new REST({ version: '10' }).setToken(process.env.CLIENT_TOKEN);
 
         /**
-         * @restricted {string[]} commands registered on guild level for restricted setting
+         * @restricted {string[]} commands registered on guild level for restricted setting (global commands will always be available)
          * @global {string[]} commands registered globally with global setting
          * @command_files {string[]} all commands found in ./commands
          */

@@ -99,7 +99,7 @@ module.exports = {
     async execute(interaction) {
 
         //command may only be used by developer
-        if (!JSON.parse(process.env.AUTHOR) === interaction.user.id) return interaction.reply('This command is not available for public useage.');
+        if (!JSON.parse(process.env.AUTHOR) === interaction.user.id) return interaction.reply('This command is not available for public usage.');
 
         if (interaction.options.getInteger('mode')) {
             //this part of the command is kinda ugly and unoptimised, and any .json file could be sent to the bot's directory, so it's disabled.

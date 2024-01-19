@@ -14,7 +14,7 @@ module.exports = {
     async execute(interaction) {
 
         //command may only be used by developer
-        if (!JSON.parse(process.env.AUTHOR) === interaction.user.id) return interaction.reply('This command is not available for public useage.');
+        if (!JSON.parse(process.env.AUTHOR) === interaction.user.id) return interaction.reply('This command is not available for public usage.');
 
         const server = await interaction.client.guilds.cache.get(process.env.KOKOMI_HOME);
         const channel = await server.channels.cache.get(process.env.KOKOMI_LOG);
