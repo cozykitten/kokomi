@@ -17,7 +17,7 @@ let worker;
 (async () => {
     worker = await createWorker('fin');
 })();
-const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const monthNames = ['𝘑𝘢𝘯𝘶𝘢𝘳𝘺', '𝘍𝘦𝘣𝘳𝘶𝘢𝘳𝘺', '𝘔𝘢𝘳𝘤𝘩', '𝘈𝘱𝘳𝘪𝘭', '𝘔𝘢𝘺', '𝘑𝘶𝘯𝘦', '𝘑𝘶𝘭𝘺', '𝘈𝘶𝘨𝘶𝘴𝘵', '𝘚𝘦𝘱𝘵𝘦𝘮𝘣𝘦𝘳', '𝘖𝘤𝘵𝘰𝘣𝘦𝘳', '𝘕𝘰𝘷𝘦𝘮𝘣𝘦𝘳', '𝘋𝘦𝘤𝘦𝘮𝘣𝘦𝘳'];
 
 async function getImageBuffer(url) {
     return new Promise((resolve, reject) => {
@@ -48,7 +48,7 @@ async function parseImageText(buyer, result) {
         //if line doesn't contain a price, go next
         const match = currentLine.match(/\d+\,\d{2}-?$/);
         if (!match) continue;
-        //console.log('\n' + currentLine) //LOG
+        console.log('\n' + currentLine) //LOG
         const priceStr = match[0];
 
         //if price is negative subtract from previous item
@@ -60,12 +60,12 @@ async function parseImageText(buyer, result) {
             continue;
         }
         const price = Number(priceStr.replace(',', '.'));
-        //console.log('    ' + price + ' - ' + currentLine.replace(priceStr, '').trim()) //LOG
+        console.log('    ' + price + ' - ' + currentLine.replace(priceStr, '').trim()) //LOG
 
         //if line doesn't contain words (product names), go next
         if (!/^[A-ZÄÖ0].*[A-Za-zÄÖäö]{3}/.test(currentLine)) continue;
         const name = currentLine.replace(priceStr, '').trim();
-        //console.log('    got: ' + name + ' @ ' + price) //LOG
+        console.log('    got: ' + name + ' @ ' + price) //LOG
 
         //if word is sum get sum and break, else save item info
         if (name.toLowerCase().includes('yhteensä')) {

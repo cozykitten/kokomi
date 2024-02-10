@@ -187,7 +187,7 @@ module.exports = {
 
                 const repeat = repeatMs(Number(interaction.options.getInteger('repeat')));
                 if (offset >= repeat) {
-                    return interaction.reply({ content: 'offset time cam\'t be larger than repeat interval' });
+                    return interaction.reply({ content: 'offset time can\'t be larger than repeat interval' });
                 }
                 db.reminder[remindDate].repeat = repeat;
             }
