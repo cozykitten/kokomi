@@ -5,7 +5,7 @@ function startup(eventFiles, commandFiles, client) {
     for (const file of eventFiles) {
         const event = require(`../events/${file}`);
         const eventName = file.split('.')[0];
-        client.on(eventName, (...args) => event(...args));
+        client.on(eventName, (...args) => event(...args, client));
     }
 
     //command handler
