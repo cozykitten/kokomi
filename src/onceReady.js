@@ -398,7 +398,7 @@ async function getTwitchAccessToken(clientId, clientSecret, twitchCache) {
     }
 }
 
-async function validateTwitchToken(twitchCache) {
+async function validateTwitchToken(clientId, clientSecret, twitchCache) {
 	const url = 'https://id.twitch.tv/oauth2/validate';
 
 	try {
