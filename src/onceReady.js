@@ -82,10 +82,11 @@ async function githubTimed(client, channel) {
  */
 async function twitchTimed(client, twitchCache) {
     //TODO: export in own command file that allows adding and removing of channels to check, similar to reminder command
-    console.log('checking twitch..');
     const clientId = process.env.TWITCH_ID;
     const clientSecret = process.env.TWITCH_SECRET;
-    const accessToken = await getTwitchAccessToken(clientId, clientSecret);
+	let accessToken;
+	if (twitchCache.accessToken) accessToken = await validateTwitchToken(clientId, clientSecret, twitchCache);
+	else accessToken = await getTwitchAccessToken(clientId, clientSecret, twitchCache);
 
     if (!accessToken) {
         //connection error, try again in 10 minutes
@@ -309,7 +310,7 @@ async function twitch(channelName, twitchCache, clientId, accessToken, discordUs
             headers: {
                 'Client-ID': clientId,
                 'Authorization': `Bearer ${accessToken}`
-              }
+            }
         });
         const data = await response.json();
 
@@ -375,7 +376,7 @@ async function checkGithubTokenExpiration() {
     }
 }
 
-async function getTwitchAccessToken(clientId, clientSecret) {
+async function getTwitchAccessToken(clientId, clientSecret, twitchCache) {
     const url = 'https://id.twitch.tv/oauth2/token';
     const params = new URLSearchParams();
     params.append('client_id', clientId);
@@ -389,9 +390,30 @@ async function getTwitchAccessToken(clientId, clientSecret) {
         });
     
         const data = await response.json();
+		twitchCache.accessToken = data.access_token;
         return data.access_token;
     } catch (e) {
         console.error('Error fetching Twitch access token:', e);
         return false;
     }
+}
+
+async function validateTwitchToken(twitchCache) {
+	const url = 'https://id.twitch.tv/oauth2/validate';
+
+	try {
+		const response = await fetch(url, {
+			headers: {
+				'Authorization': `Bearer ${twitchCache.accessToken}`
+			}
+		});
+
+		const data = await response.json();
+		if (response.ok && data.expires_in > 100) return twitchCache.accessToken;
+		if (response.status === 401) return await getTwitchAccessToken(clientId, clientSecret, twitchCache);
+	} catch (e) {
+		console.error('Error validating Twitch access token:', e);
+        return false;
+	}
+
 }
