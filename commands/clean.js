@@ -32,7 +32,8 @@ async function deleteMessageId(interaction) {
  * @returns {Promise<void>}
  */
 async function deleteMessageAmount(interaction) {
-
+	/** @type string[] */
+	const exclusionIds = interaction.options.getString('exclude') ? interaction.options.getString('exclude').split(' ') : [];
     let messages;
     if (interaction.options.getUser('user')) {
 
@@ -40,7 +41,7 @@ async function deleteMessageAmount(interaction) {
         const id = interaction.options.getUser('user').id;
 
         messages = messages.filter(function (m) {
-            if (this.count < interaction.options.getInteger('amount') && m.author.id === id) {
+            if (this.count < interaction.options.getInteger('amount') && m.author.id === id && !exclusionIds.includes(m.id)) {
                 this.count++;
                 return true;
             }
@@ -48,7 +49,11 @@ async function deleteMessageAmount(interaction) {
         }, { count: 0 });
     }
     else {
-        messages = await interaction.channel.messages.fetch({ limit: interaction.options.getInteger('amount'), cache: false });
+        messages = await interaction.channel.messages.fetch({ limit: interaction.options.getInteger('amount') + exclusionIds.length, cache: false });
+		messages = messages.filter(function (m) {
+            if (exclusionIds.includes(m.id)) return false;
+            return true;
+        });
     }
 
     if (messages.size && messages.at(-1).createdTimestamp + 1209000000 > Date.now()) {
@@ -77,10 +82,11 @@ async function deleteMessageAmount(interaction) {
 async function deleteMessageAmountDM(interaction) {
     await interaction.deferReply({ ephemeral: true });
     let messages = await interaction.channel.messages.fetch({ limit: 100, cache: false });
-    const id = process.env.CLIENT_ID;
-    
-    messages = messages.filter(function (m) {
-        if (this.count < interaction.options.getInteger('amount') && m.author.id === id) {
+	const exclusionIds = interaction.options.getString('exclude') ? interaction.options.getString('exclude').split(' ') : [];
+	const id = process.env.CLIENT_ID;
+
+	messages = messages.filter(function (m) {
+		if (this.count < interaction.options.getInteger('amount') && m.author.id === id && !exclusionIds.includes(m.id)) {
             this.count++;
             return true;
         }
@@ -102,6 +108,7 @@ module.exports = {
         .addIntegerOption(option => option.setName('amount').setDescription('amount of messages to delete').setMaxValue(100).setMinValue(1))
         .addStringOption(option => option.setName('id').setDescription('message id').setMaxLength(20))
         .addUserOption(option => option.setName('user').setDescription('user mentionable'))
+
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
         .setDMPermission(true),
 
