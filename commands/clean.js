@@ -108,7 +108,7 @@ module.exports = {
         .addIntegerOption(option => option.setName('amount').setDescription('amount of messages to delete').setMaxValue(100).setMinValue(1))
         .addStringOption(option => option.setName('id').setDescription('message id').setMaxLength(20))
         .addUserOption(option => option.setName('user').setDescription('user mentionable'))
-
+		.addStringOption(option => option.setName('exclude').setDescription('message ids of messages to exclude'))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
         .setDMPermission(true),
 
