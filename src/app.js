@@ -1,9 +1,7 @@
 require('dotenv').config();
 const fs = require('fs');
-const { lb, synclb } = require('./dbManager');
-const { startup } = require('./reloadManager');
+const { startup, stopApplication } = require('./reloadManager');
 const { Client, IntentsBitField } = require("discord.js");
-const pm2 = require('pm2');
 //const { loadReminders } = require('./commands/reminder'); for directly calling loadReminders(client);
 
 
@@ -31,6 +29,9 @@ const eventFiles = fs.readdirSync('./events/').filter(file => /.js|.ts/.test(fil
 const commandFiles = fs.readdirSync('./commands/').filter(file => /.js|.ts/.test(file));
 startup(eventFiles, commandFiles, client);
 
+client.on('warn', (message) => console.warn('\x1b[33mDiscord client issue:\x1b[0m', message));
+client.on('error', (message) => console.error('\x1b[31mDiscord client error:\x1b[0m', message));
+
 
 //login
 async function login() {
@@ -46,22 +47,10 @@ login();
 
 //planned exit
 process.on('SIGINT', async () => {
-    console.log('exit command received..');
-    await client.commands.get('receipt').terminateWorker();
-    pm2.disconnect();
-    lb.lastexit = true;
-    try {
-        await synclb(lb);
-    } catch (error) {
-        const home = await client.guilds.fetch(process.env.KOKOMI_HOME);
-        const log = await home.channels.fetch(process.env.KOKOMI_LOG);
-        await log.send(`Error while syncing the database:\n${error.message}`);
-    }
-    await client.destroy();
-    process.exit();
+    await stopApplication(client);
 });
 
 //any exit
-process.on('exit', async () => {
+/*process.on('exit', async () => {
     await client.commands.get('receipt').terminateWorker();
-});
+});*/

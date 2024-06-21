@@ -76,5 +76,22 @@ exports.restartApplication = async (client) => {
         await log.send(`Error while syncing the database:\n${error.message}`);
     }
 	await client.destroy();
-	process.exit();
+	process.exit(3);
+}
+
+exports.stopApplication = async (client) => {
+    require('dotenv').config();
+    const { lb, synclb } = require('./dbManager');
+
+    console.log('exit command received..');
+	lb.lastexit = true;
+	try {
+        await synclb(lb);
+    } catch (error) {
+        const home = await client.guilds.fetch(process.env.KOKOMI_HOME);
+        const log = await home.channels.fetch(process.env.KOKOMI_LOG);
+        await log.send(`Error while syncing the database:\n${error.message}`);
+    }
+	await client.destroy();
+	process.exit(0);
 }

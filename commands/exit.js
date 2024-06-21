@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 require('dotenv').config();
-const { reloadApplication, restartApplication } = require('../src/reloadManager');
-const pm2 = require('pm2');
+const { reloadApplication, restartApplication, stopApplication } = require('../src/reloadManager');
 
 
 module.exports = {
@@ -30,16 +29,7 @@ module.exports = {
 		}
 
 		await interaction.reply({ content: 'Good night! <:KeqingSleep:1038896867305603122>', ephemeral: true});
-
-
-		pm2.connect(function (err) {
-			if (err) {
-				console.error(err);
-				process.exit(2);
-			}
-			pm2.stop('ecosystem.config.js');
-		});
-
+		await stopApplication(interaction.client);
 		
 		// console.log('exiting..');
 		// lb.lastexit = true;
